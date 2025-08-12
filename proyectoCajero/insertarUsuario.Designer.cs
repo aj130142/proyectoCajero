@@ -39,6 +39,7 @@
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
+            okeyBtn = new Button();
             SuspendLayout();
             // 
             // label6
@@ -130,11 +131,21 @@
             label1.TabIndex = 11;
             label1.Text = "Nombre";
             // 
+            // okeyBtn
+            // 
+            okeyBtn.Location = new Point(189, 384);
+            okeyBtn.Name = "okeyBtn";
+            okeyBtn.Size = new Size(94, 29);
+            okeyBtn.TabIndex = 22;
+            okeyBtn.Text = "Aceptar";
+            okeyBtn.UseVisualStyleBackColor = true;
+            // 
             // insertarUsuario
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(779, 450);
+            Controls.Add(okeyBtn);
             Controls.Add(label6);
             Controls.Add(maxsaldoTB);
             Controls.Add(saldoTB);
@@ -165,5 +176,6 @@
         private Label label3;
         private Label label2;
         private Label label1;
+        private Button okeyBtn;
     }
 }

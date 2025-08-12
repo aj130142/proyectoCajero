@@ -37,6 +37,7 @@
             label4 = new Label();
             modTarjCheckB = new CheckBox();
             modMaxSaldoCheckB = new CheckBox();
+            okeyBtn = new Button();
             SuspendLayout();
             // 
             // label1
@@ -117,11 +118,21 @@
             modMaxSaldoCheckB.UseVisualStyleBackColor = true;
             modMaxSaldoCheckB.CheckedChanged += checkBox1_CheckedChanged;
             // 
+            // okeyBtn
+            // 
+            okeyBtn.Location = new Point(137, 343);
+            okeyBtn.Name = "okeyBtn";
+            okeyBtn.Size = new Size(94, 29);
+            okeyBtn.TabIndex = 9;
+            okeyBtn.Text = "Aceptar";
+            okeyBtn.UseVisualStyleBackColor = true;
+            // 
             // modificarUsuarios
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(746, 450);
+            Controls.Add(okeyBtn);
             Controls.Add(modMaxSaldoCheckB);
             Controls.Add(modTarjCheckB);
             Controls.Add(label4);
@@ -148,5 +159,6 @@
         private Label label4;
         private CheckBox modTarjCheckB;
         private CheckBox modMaxSaldoCheckB;
+        private Button okeyBtn;
     }
 }
