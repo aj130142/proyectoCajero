@@ -68,6 +68,7 @@
             // pinTB
             // 
             pinTB.Location = new Point(186, 207);
+            pinTB.MaxLength = 4;
             pinTB.Name = "pinTB";
             pinTB.Size = new Size(125, 27);
             pinTB.TabIndex = 18;
@@ -75,6 +76,7 @@
             // tarjetaTB
             // 
             tarjetaTB.Location = new Point(186, 154);
+            tarjetaTB.MaxLength = 16;
             tarjetaTB.Name = "tarjetaTB";
             tarjetaTB.Size = new Size(279, 27);
             tarjetaTB.TabIndex = 17;
@@ -139,6 +141,8 @@
             okeyBtn.TabIndex = 22;
             okeyBtn.Text = "Aceptar";
             okeyBtn.UseVisualStyleBackColor = true;
+            okeyBtn.Click += okeyBtn_Click;
+            okeyBtn.MouseClick += okeyBtn_MouseClick;
             // 
             // insertarUsuario
             // 

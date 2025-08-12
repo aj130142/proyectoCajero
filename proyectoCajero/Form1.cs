@@ -6,5 +6,18 @@ namespace proyectoCajero
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void insertarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            insertarUsuario ventanaInser = new insertarUsuario();
+
+            ventanaInser.Show();
+
+        }
     }
 }
