@@ -163,6 +163,7 @@
             Controls.Add(label1);
             Name = "insertarUsuario";
             Text = "Nuevo usuario";
+            Load += insertarUsuario_Load;
             ResumeLayout(false);
             PerformLayout();
         }
