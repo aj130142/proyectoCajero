@@ -106,6 +106,7 @@
             modTarjCheckB.TabIndex = 7;
             modTarjCheckB.Text = "Modificar";
             modTarjCheckB.UseVisualStyleBackColor = true;
+            modTarjCheckB.CheckedChanged += modTarjCheckB_CheckedChanged;
             // 
             // modMaxSaldoCheckB
             // 
@@ -126,6 +127,7 @@
             okeyBtn.TabIndex = 9;
             okeyBtn.Text = "Aceptar";
             okeyBtn.UseVisualStyleBackColor = true;
+            okeyBtn.Click += okeyBtn_Click;
             // 
             // modificarUsuarios
             // 
@@ -144,6 +146,7 @@
             Controls.Add(label1);
             Name = "modificarUsuarios";
             Text = "Modificar usuarios";
+            Load += modificarUsuarios_Load;
             ResumeLayout(false);
             PerformLayout();
         }

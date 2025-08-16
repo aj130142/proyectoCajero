@@ -13,22 +13,25 @@ using static proyectoCajero.archivosTxt;
 
 
 
+
 namespace proyectoCajero
 {
     public partial class insertarUsuario : Form
     {
+        
+       
 
         public insertarUsuario()
         {
             InitializeComponent();
+            
+            
         }
 
         private void okeyBtn_Click(object sender, EventArgs e)
         {
-            
-            string directorioEjecucion = AppDomain.CurrentDomain.BaseDirectory;
-            string subdirec = "archivos txt/usuario.txt";
-            string pathFinal=Path.Combine(directorioEjecucion, subdirec);
+            string nombreArchivo = "usuario.txt";
+            string pathFinal = direccione.obtenerRutasTxt(nombreArchivo);
             string auxnoTarjeta = tarjetaTB.Text;
             string auxPin = pinTB.Text;
 

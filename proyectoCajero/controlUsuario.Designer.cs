@@ -45,6 +45,7 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "Nombre", "Tarjeta Credito" });
             comboBox1.Location = new Point(204, 36);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(151, 28);
@@ -70,10 +71,10 @@
             // 
             // textBox2
             // 
-            textBox2.Location = new Point(90, 98);
+            textBox2.Location = new Point(29, 98);
             textBox2.Multiline = true;
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(639, 309);
+            textBox2.Size = new Size(727, 309);
             textBox2.TabIndex = 4;
             // 
             // controlUsuario
@@ -88,6 +89,7 @@
             Controls.Add(textBox1);
             Name = "controlUsuario";
             Text = "controlUsuario";
+            Load += controlUsuario_Load;
             ResumeLayout(false);
             PerformLayout();
         }

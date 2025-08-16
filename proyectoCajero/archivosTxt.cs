@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.LinkLabel;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace proyectoCajero
 {
@@ -37,18 +38,44 @@ namespace proyectoCajero
             }
         }
        
+        public interface escrGenericoTxt
+        {
+            public static void escriTxt(string pathm,List<string> lista1)
+            {
 
-        public class leerTxt
+                try
+                {
+                    // Usar StreamWriter en modo append (true)
+                    using (StreamWriter sw = File.AppendText(pathm))
+                    {
+
+                        foreach(string s in lista1)
+                        {
+                            sw.WriteLine(s);
+                        }
+                        
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al escribir en el archivo: {ex.Message}");
+                }
+
+            }
+        }
+
+
+        public interface leerTxt
         {
             
 
-            public List<string> obtenerDatosTxt(string path)
+            public static List<string> obtenerDatosTxt(string path)
             {
                 List<string> obtenerTxt = new List<string>();
 
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("Archivo no encontrado");
+                    MessageBox.Show("Error 505: no existe el archivo");
                     return obtenerTxt;
                 }
 
@@ -69,6 +96,22 @@ namespace proyectoCajero
                 }
 
                 return obtenerTxt;
+            }
+
+
+        }
+
+        public interface direccione
+        {
+            public static string obtenerRutasTxt(string path1)
+            {
+
+                string directorioEjecucion = AppDomain.CurrentDomain.BaseDirectory;
+                string subdirec = "archivos txt/"+path1;
+                string pathFinal = Path.Combine(directorioEjecucion, subdirec);
+
+
+                return pathFinal;
             }
 
 
