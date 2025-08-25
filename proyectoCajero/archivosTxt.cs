@@ -11,16 +11,16 @@ namespace proyectoCajero
 {
     internal class archivosTxt
     {
-        public interface escribirArchi
+        public interface escribirArchi// clase para escribir archivos txt
         {
             public static void Main(string path,string nameUs,string noTarjeta,string noPin,string saldoUs,string maxsaldoUsu )
-            {
-                var numero = new Random();
-                var value= numero.Next(0,99999999);
-                string id=value.ToString();
+            {// este metodo es para guardar datos mediante uso de argumentos 
+                var numero = new Random(); //creamos un random numero
+                var value= numero.Next(0,99999999);// crea un numero aleatorio
+                string id=value.ToString();// casta de string a int
                 try
                 {
-                    // Usar StreamWriter en modo append (true)
+                    //declaramos la creacion para escribir archivos
                     using (StreamWriter sw = new StreamWriter(path, append: true))
                     {
                         sw.WriteLine(id);
@@ -33,19 +33,19 @@ namespace proyectoCajero
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error al escribir en el archivo: {ex.Message}");
+                    MessageBox.Show($"Error al escribir en el archivo: {ex.Message}");
                 }
             }
         }
        
-        public interface escrGenericoTxt
+        public interface escrGenericoTxt// escribir archivos forma generica
         {
-            public static void escriTxt(string pathm,List<string> lista1)
-            {
+            public static void escriTxt(string pathm,List<string> lista1)// metodo general para escribir archivos, la ruta y la lista
+            {// la lista debe de estar en orden segun la necesidades
 
                 try
                 {
-                    // Usar StreamWriter en modo append (true)
+                    //se escribe en la ruta las lista al final del archivo
                     using (StreamWriter sw = File.AppendText(pathm))
                     {
 
@@ -58,22 +58,22 @@ namespace proyectoCajero
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error al escribir en el archivo: {ex.Message}");
+                    MessageBox.Show($"Error al escribir en el archivo: {ex.Message}");
                 }
 
             }
         }
 
 
-        public interface leerTxt
+        public interface leerTxt // lee los archivos de todo tipo
         {
             
 
-            public static List<string> obtenerDatosTxt(string path)
+            public static List<string> obtenerDatosTxt(string path)// el argumento es la ruta del archivo
             {
-                List<string> obtenerTxt = new List<string>();
+                List<string> obtenerTxt = new List<string>();// lista para guardar informacion
 
-                if (!File.Exists(path))
+                if (!File.Exists(path))// verificamos si existe o no el archivo
                 {
                     MessageBox.Show("Error 505: no existe el archivo");
                     return obtenerTxt;
@@ -81,7 +81,7 @@ namespace proyectoCajero
 
                 try
                 {
-                    using (StreamReader reader = new StreamReader(path))
+                    using (StreamReader reader = new StreamReader(path)) // creamos la lectura del txt con la ruta
                     {
                         string linea;
                         while ((linea = reader.ReadLine()) != null)
@@ -95,23 +95,23 @@ namespace proyectoCajero
                     Console.WriteLine($"Error: {ex.Message}");
                 }
 
-                return obtenerTxt;
+                return obtenerTxt;//devolvemos la lista de todos los datos
             }
 
 
         }
 
-        public interface direccione
+        public interface direccione //sirve para obtener direcciones de la carpte archivos txt
         {
-            public static string obtenerRutasTxt(string path1)
+            public static string obtenerRutasTxt(string path1)// el argumento es el nombre del archivo
             {
 
-                string directorioEjecucion = AppDomain.CurrentDomain.BaseDirectory;
-                string subdirec = "archivos txt/"+path1;
-                string pathFinal = Path.Combine(directorioEjecucion, subdirec);
+                string directorioEjecucion = AppDomain.CurrentDomain.BaseDirectory;// ruta original de nuestro proyecto
+                string subdirec = "archivos txt/"+path1;//unimos la carpeta "archivos txt" con el nombre del archivo txt
+                string pathFinal = Path.Combine(directorioEjecucion, subdirec);//la ruta total de nuestro archivo txt en el sistema
 
 
-                return pathFinal;
+                return pathFinal;// retorna un string para su direccion
             }
 
 

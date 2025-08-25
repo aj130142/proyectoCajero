@@ -13,7 +13,7 @@ namespace proyectoCajero
 {
     public partial class modificarUsuarios : Form
     {
-        public static List<string> listaUsa = new List<string>();
+        public static List<string> listaUsa = new List<string>();//lista global para guardar datos de los usuarios
         public modificarUsuarios()
         {
             InitializeComponent();
@@ -41,9 +41,9 @@ namespace proyectoCajero
 
         private void modificarUsuarios_Load(object sender, EventArgs e)
         {
-            string cargarUsuario = "usuario.txt";
-            string pathF = direccione.obtenerRutasTxt(cargarUsuario);
-            listaUsa = leerTxt.obtenerDatosTxt(pathF);
+            string cargarUsuario = "usuario.txt"; //nombre del archivo de la carpeta a buscar
+            string pathF = direccione.obtenerRutasTxt(cargarUsuario);//ingresamos el nombre del archivo y obtenemos la ruta completa del usuario.txt
+            listaUsa = leerTxt.obtenerDatosTxt(pathF);//con la ruta obtenemos una lista global para guardar todos los datos de los usuarios
         }
 
         private void okeyBtn_Click(object sender, EventArgs e)
