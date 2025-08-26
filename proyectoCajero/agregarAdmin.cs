@@ -24,12 +24,28 @@ namespace proyectoCajero
         {
             string newUser=nameTxt.Text;//obtiene el usuario
             string newpass =passTxt.Text;//obtine la contraseña
-            // guarda en la lista
-            listaLog.Add(newUser);
-            listaLog.Add(newpass);
             string nombreTxt = "adminUserTxt.txt";//declaramos la carpeta 
             string rutatxt = direccione.obtenerRutasTxt(nombreTxt);// obtenemos la ruta completa del archivo en archivos txt
-            escrGenericoTxt.escriTxt(rutatxt, listaLog);//obtiene la ruta y la lista para escribirla
+            // guarda en la lista
+            List<String> lista1 = new List<String>();
+            lista1 = leerTxt.obtenerDatosTxt(rutatxt);
+
+            bool userRepetido =verificar.verificarRepetido(newUser, lista1);
+
+            if (userRepetido!=true) {
+
+                listaLog.Add(newUser);
+                listaLog.Add(newpass);
+                
+                escrGenericoTxt.escriTxt(rutatxt, listaLog);//obtiene la ruta y la lista para escribirla
+
+            }
+            else
+            {
+                MessageBox.Show("Admin repetido");
+
+            }
+            
 
 
         }

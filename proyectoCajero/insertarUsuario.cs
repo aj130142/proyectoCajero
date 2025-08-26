@@ -43,23 +43,35 @@ namespace proyectoCajero
             string saldo = saldoTB.Text;// obtiene el texto del textbox
             string maxSaldo = maxsaldoTB.Text;// obtiene el texto del textbox
 
+            List<string> lista = new List<string>();
+            lista=leerTxt.obtenerDatosTxt(pathFinal);
+            
+            bool aceptar=verificar.verificarRepetido(nombreUsuario, lista);
+            bool pinAceptar= verificar.verificarRepetido(auxnoTarjeta, lista);
+            if (aceptar!=true && pinAceptar!=true) {
+                //Aca se limpia la informacion de los textbox 
+                nameTB.Text = "";
+                tarjetaTB.Text = "";
+                pinTB.Text = "";
+                saldoTB.Text = "";
+                maxsaldoTB.Text = "";
+                //aca termina
 
-            //Aca se limpia la informacion de los textbox 
-            nameTB.Text = "";
-            tarjetaTB.Text = "";
-            pinTB.Text = "";
-            saldoTB.Text = "";
-            maxsaldoTB.Text = "";
-            //aca termina
+                //metodo especial para guardar usuario, debe contar con todos los argumentos
+                escribirArchi.Main(path: pathFinal,
+                    nameUs: nombreUsuario,
+                    noTarjeta: auxnoTarjeta,
+                    noPin: auxPin, saldoUs: saldo,
+                    maxsaldoUsu: maxSaldo);
 
-            //metodo especial para guardar usuario, debe contar con todos los argumentos
-            escribirArchi.Main(path:pathFinal,
-                nameUs:nombreUsuario,
-                noTarjeta:auxnoTarjeta,
-                noPin:auxPin,saldoUs:saldo,
-                maxsaldoUsu:maxSaldo);
+            }
+            else
+            {
+                MessageBox.Show("usuario repetido");
+            }
+            
 
-
+            
 
 
         }

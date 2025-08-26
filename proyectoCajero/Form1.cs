@@ -8,7 +8,7 @@ namespace proyectoCajero
         public Form1()
         {
             InitializeComponent();
-            administarToolStripMenuItem.Visible = false;//oculta el resto del menu hasta que inicies sesion
+            administarToolStripMenuItem.Visible = true;//oculta el resto del menu hasta que inicies sesion, cambialo para tener acceso
 
         }
 

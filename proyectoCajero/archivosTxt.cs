@@ -13,11 +13,11 @@ namespace proyectoCajero
     {
         public interface escribirArchi// clase para escribir archivos txt
         {
-            public static void Main(string path,string nameUs,string noTarjeta,string noPin,string saldoUs,string maxsaldoUsu )
+            public static void Main(string path, string nameUs, string noTarjeta, string noPin, string saldoUs, string maxsaldoUsu)
             {// este metodo es para guardar datos mediante uso de argumentos 
                 var numero = new Random(); //creamos un random numero
-                var value= numero.Next(0,99999999);// crea un numero aleatorio
-                string id=value.ToString();// casta de string a int
+                var value = numero.Next(0, 99999999);// crea un numero aleatorio
+                string id = value.ToString();// casta de string a int
                 try
                 {
                     //declaramos la creacion para escribir archivos
@@ -37,10 +37,10 @@ namespace proyectoCajero
                 }
             }
         }
-       
+
         public interface escrGenericoTxt// escribir archivos forma generica
         {
-            public static void escriTxt(string pathm,List<string> lista1)// metodo general para escribir archivos, la ruta y la lista
+            public static void escriTxt(string pathm, List<string> lista1)// metodo general para escribir archivos, la ruta y la lista
             {// la lista debe de estar en orden segun la necesidades
 
                 try
@@ -48,12 +48,23 @@ namespace proyectoCajero
                     //se escribe en la ruta las lista al final del archivo
                     using (StreamWriter sw = File.AppendText(pathm))
                     {
-
-                        foreach(string s in lista1)
+                        bool fileExists = File.Exists(pathm) && new FileInfo(pathm).Length > 0;
+                        foreach (string s in lista1)
                         {
-                            sw.WriteLine(s);
+                            if (!string.IsNullOrWhiteSpace(s)) // Evita escribir líneas vacías
+                            {
+                                if (fileExists)
+                                {
+                                    sw.WriteLine(s);
+                                }
+                                else
+                                {
+                                    sw.Write(s); // Primera línea sin salto de línea inicial
+                                    fileExists = true;
+                                }
+                            }
+
                         }
-                        
                     }
                 }
                 catch (Exception ex)
@@ -67,7 +78,7 @@ namespace proyectoCajero
 
         public interface leerTxt // lee los archivos de todo tipo
         {
-            
+
 
             public static List<string> obtenerDatosTxt(string path)// el argumento es la ruta del archivo
             {
@@ -94,7 +105,7 @@ namespace proyectoCajero
                 {
                     Console.WriteLine($"Error: {ex.Message}");
                 }
-
+                obtenerTxt=obtenerTxt.FindAll(n => n != "");
                 return obtenerTxt;//devolvemos la lista de todos los datos
             }
 
@@ -107,7 +118,7 @@ namespace proyectoCajero
             {
 
                 string directorioEjecucion = AppDomain.CurrentDomain.BaseDirectory;// ruta original de nuestro proyecto
-                string subdirec = "archivos txt/"+path1;//unimos la carpeta "archivos txt" con el nombre del archivo txt
+                string subdirec = "archivos txt/" + path1;//unimos la carpeta "archivos txt" con el nombre del archivo txt
                 string pathFinal = Path.Combine(directorioEjecucion, subdirec);//la ruta total de nuestro archivo txt en el sistema
 
 
@@ -116,6 +127,17 @@ namespace proyectoCajero
 
 
         }
+        public interface verificar
+        {
+            public static Boolean verificarRepetido(string datoBuscar, List<string> ListaBuscar)
+            {
 
+                bool existeLuis = ListaBuscar.Exists(n => n == datoBuscar);
+                MessageBox.Show(""+existeLuis);
+                
+                return existeLuis;
+            }
+
+        }
     }
 }
