@@ -1,4 +1,5 @@
 using static proyectoCajero.archivosTxt;
+using static proyectoCajero.carpetas.IVercrearArchivo;
 
 namespace proyectoCajero
 {
@@ -14,7 +15,7 @@ namespace proyectoCajero
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            verificarCarpeta();
         }
 
         private void insertarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
