@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,19 @@ namespace proyectoCajero
         {
             public static void Main(string path, string nameUs, string noTarjeta, string noPin, string saldoUs, string maxsaldoUsu)
             {// este metodo es para guardar datos mediante uso de argumentos 
-                var numero = new Random(); //creamos un random numero
-                var value = numero.Next(0, 99999999);// crea un numero aleatorio
-                string id = value.ToString();// casta de string a int
+                int lineas = 0;
+                if (File.Exists(path))// metodo para poder saber cuantas lineas tiene
+                {
+                    lineas = File.ReadAllLines(path).Length;
+                    lineas = lineas / 6;
+                    
+                }
+                else
+                {
+                    Console.WriteLine("El archivo no existe.");
+                    lineas = 0;
+                }
+                string id = lineas.ToString();// casta de string a int del id
                 try
                 {
                     //declaramos la creacion para escribir archivos
@@ -43,28 +54,38 @@ namespace proyectoCajero
             public static void escriTxt(string pathm, List<string> lista1)// metodo general para escribir archivos, la ruta y la lista
             {// la lista debe de estar en orden segun la necesidades
 
+                int lineas = 0;
+                if (File.Exists(pathm))
+                {
+                    lineas = File.ReadAllLines(pathm).Length;
+                    lineas = lineas / 3;
+
+                }
+                else
+                {
+                    Console.WriteLine("El archivo no existe.");
+                    lineas = 0;
+                }
+                string id = lineas.ToString();
+                lista1= lista1.Prepend(id).ToList();// agregamos el id al principio
+                
                 try
                 {
                     //se escribe en la ruta las lista al final del archivo
-                    using (StreamWriter sw = File.AppendText(pathm))
+                    try
                     {
-                        bool fileExists = File.Exists(pathm) && new FileInfo(pathm).Length > 0;
-                        foreach (string s in lista1)
+                        //declaramos la creacion para escribir archivos
+                        using (StreamWriter sw = new StreamWriter(pathm, append: true))
                         {
-                            if (!string.IsNullOrWhiteSpace(s)) // Evita escribir líneas vacías
+                           foreach(string s in lista1)
                             {
-                                if (fileExists)
-                                {
-                                    sw.WriteLine(s);
-                                }
-                                else
-                                {
-                                    sw.Write(s); // Primera línea sin salto de línea inicial
-                                    fileExists = true;
-                                }
+                                sw.WriteLine(s);
                             }
-
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al escribir en el archivo: {ex.Message}");
                     }
                 }
                 catch (Exception ex)

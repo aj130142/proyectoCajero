@@ -38,6 +38,8 @@
             modTarjCheckB = new CheckBox();
             modMaxSaldoCheckB = new CheckBox();
             okeyBtn = new Button();
+            label5 = new Label();
+            allSelect = new CheckBox();
             SuspendLayout();
             // 
             // label1
@@ -78,7 +80,7 @@
             // 
             tarjetaNewTB.Location = new Point(328, 193);
             tarjetaNewTB.Name = "tarjetaNewTB";
-            tarjetaNewTB.Size = new Size(125, 27);
+            tarjetaNewTB.Size = new Size(276, 27);
             tarjetaNewTB.TabIndex = 4;
             // 
             // maxSaldoTB
@@ -100,24 +102,22 @@
             // modTarjCheckB
             // 
             modTarjCheckB.AutoSize = true;
-            modTarjCheckB.Location = new Point(12, 200);
+            modTarjCheckB.Location = new Point(98, 199);
             modTarjCheckB.Name = "modTarjCheckB";
-            modTarjCheckB.Size = new Size(95, 24);
+            modTarjCheckB.Size = new Size(18, 17);
             modTarjCheckB.TabIndex = 7;
-            modTarjCheckB.Text = "Modificar";
             modTarjCheckB.UseVisualStyleBackColor = true;
-            modTarjCheckB.CheckedChanged += modTarjCheckB_CheckedChanged;
+            modTarjCheckB.CheckedChanged += modTarjCheckB_CheckedChanged_1;
             // 
             // modMaxSaldoCheckB
             // 
             modMaxSaldoCheckB.AutoSize = true;
-            modMaxSaldoCheckB.Location = new Point(12, 259);
+            modMaxSaldoCheckB.Location = new Point(98, 269);
             modMaxSaldoCheckB.Name = "modMaxSaldoCheckB";
-            modMaxSaldoCheckB.Size = new Size(95, 24);
+            modMaxSaldoCheckB.Size = new Size(18, 17);
             modMaxSaldoCheckB.TabIndex = 8;
-            modMaxSaldoCheckB.Text = "Modificar";
             modMaxSaldoCheckB.UseVisualStyleBackColor = true;
-            modMaxSaldoCheckB.CheckedChanged += checkBox1_CheckedChanged;
+            modMaxSaldoCheckB.CheckedChanged += modMaxSaldoCheckB_CheckedChanged;
             // 
             // okeyBtn
             // 
@@ -129,11 +129,32 @@
             okeyBtn.UseVisualStyleBackColor = true;
             okeyBtn.Click += okeyBtn_Click;
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(23, 129);
+            label5.Name = "label5";
+            label5.Size = new Size(49, 20);
+            label5.TabIndex = 10;
+            label5.Text = "Todos";
+            // 
+            // allSelect
+            // 
+            allSelect.AutoSize = true;
+            allSelect.Location = new Point(98, 135);
+            allSelect.Name = "allSelect";
+            allSelect.Size = new Size(18, 17);
+            allSelect.TabIndex = 11;
+            allSelect.UseVisualStyleBackColor = true;
+            allSelect.CheckedChanged += allSelect_CheckedChanged;
+            // 
             // modificarUsuarios
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(746, 450);
+            Controls.Add(allSelect);
+            Controls.Add(label5);
             Controls.Add(okeyBtn);
             Controls.Add(modMaxSaldoCheckB);
             Controls.Add(modTarjCheckB);
@@ -163,5 +184,7 @@
         private CheckBox modTarjCheckB;
         private CheckBox modMaxSaldoCheckB;
         private Button okeyBtn;
+        private Label label5;
+        private CheckBox allSelect;
     }
 }
