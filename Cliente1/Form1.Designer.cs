@@ -1,4 +1,4 @@
-﻿namespace Cliente
+﻿namespace Cliente1
 {
     partial class Form1
     {

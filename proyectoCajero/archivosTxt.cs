@@ -153,12 +153,24 @@ namespace proyectoCajero
             public static Boolean verificarRepetido(string datoBuscar, List<string> ListaBuscar)
             {
 
-                bool existeLuis = ListaBuscar.Exists(n => n == datoBuscar);
-                MessageBox.Show(""+existeLuis);
+                bool exiteArchivo = ListaBuscar.Exists(n => n == datoBuscar);
+                MessageBox.Show(""+ exiteArchivo);
                 
-                return existeLuis;
+                return exiteArchivo;
             }
 
         }
+
+        public interface registros
+        {
+            public static void historialPin(string path,string pinNew,string pinOld,List<string> listas)
+            {
+                string ruta=direccione.obtenerRutasTxt(path);
+                escrGenericoTxt.escriTxt(ruta,listas);
+
+
+            }
+        }
+
     }
 }

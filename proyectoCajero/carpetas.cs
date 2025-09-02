@@ -23,10 +23,7 @@ namespace proyectoCajero
                     Directory.CreateDirectory(pathFinal);
                     MessageBox.Show("carpeta creada");
                 }
-                else
-                {
-                    
-                }
+                
             }
         }
 

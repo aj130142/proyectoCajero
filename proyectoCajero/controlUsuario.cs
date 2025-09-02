@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static proyectoCajero.archivosTxt;
+using static proyectoCajero.conexion;
 
 namespace proyectoCajero
 {
@@ -17,7 +18,7 @@ namespace proyectoCajero
         public controlUsuario()
         {
             InitializeComponent();
-            
+
             
 
         }

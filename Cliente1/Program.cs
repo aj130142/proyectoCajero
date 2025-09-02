@@ -1,4 +1,4 @@
-namespace Cliente
+namespace Cliente1
 {
     internal static class Program
     {

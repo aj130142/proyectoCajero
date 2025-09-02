@@ -1,5 +1,6 @@
 using static proyectoCajero.archivosTxt;
 using static proyectoCajero.carpetas.IVercrearArchivo;
+using static proyectoCajero.conexion;
 
 namespace proyectoCajero
 {
@@ -10,18 +11,20 @@ namespace proyectoCajero
         {
             InitializeComponent();
             administarToolStripMenuItem.Visible = true;//oculta el resto del menu hasta que inicies sesion, cambialo para tener acceso
-
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             verificarCarpeta();
+            Main();
+
         }
 
         private void insertarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             insertarUsuario ventanaInser = new insertarUsuario();
-
+            
             ventanaInser.Show(); // abrimos la ventana insertarUsuario
 
         }
@@ -78,6 +81,25 @@ namespace proyectoCajero
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+        static async Task Main()
+        {
+            var servidor = new ServidorTCP("127.0.0.1", 5000);
+
+            servidor.OnMensajeRecibido += async (id, msg) =>
+            {
+                Console.WriteLine($"[{id}] dice: {msg}");
+
+                // Responder al cliente que envió
+                await servidor.Enviar(id, $"Servidor recibió: {msg}");
+            };
+
+            servidor.Iniciar();
+
+            Console.WriteLine("Servidor corriendo. Presiona ENTER para salir.");
+            Console.ReadLine();
+
+            servidor.Detener();
         }
     }
 }

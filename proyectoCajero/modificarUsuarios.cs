@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static proyectoCajero.archivosTxt;
 
+
 namespace proyectoCajero
 {
     public partial class modificarUsuarios : Form
@@ -67,19 +68,23 @@ namespace proyectoCajero
 
         private void okeyBtn_Click(object sender, EventArgs e)
         {
+            List<string> historialPin=new List<string>();
             string nombreBuscar = nameTB.Text;
+            string VhistorialPIn = "historialPin";
             string maXSaldo = "";
             string newTarjeta = "";
             int indexUser = listaUsu.FindIndex(n => n == nombreBuscar);
-
-
+            
+            
 
             if (maxSaldoTB.Enabled && tarjetaNewTB.Enabled)
             {
+
                 maXSaldo = maxSaldoTB.Text;
                 listaUsu[indexUser + 4] = maXSaldo;
                 newTarjeta = tarjetaNewTB.Text;
                 listaUsu[indexUser + 1] = newTarjeta;
+                
             }
 
             if (maxSaldoTB.Enabled)
