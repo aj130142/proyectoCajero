@@ -39,6 +39,7 @@
             label2 = new Label();
             label1 = new Label();
             newAdmBtn = new Button();
+            activarCajerosToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -54,7 +55,7 @@
             // 
             // administarToolStripMenuItem
             // 
-            administarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { insertarUsuariosToolStripMenuItem, buscarUsuariosToolStripMenuItem, modificarUsuariosToolStripMenuItem });
+            administarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { insertarUsuariosToolStripMenuItem, buscarUsuariosToolStripMenuItem, modificarUsuariosToolStripMenuItem, activarCajerosToolStripMenuItem });
             administarToolStripMenuItem.Name = "administarToolStripMenuItem";
             administarToolStripMenuItem.Size = new Size(95, 24);
             administarToolStripMenuItem.Text = "Administar";
@@ -62,21 +63,21 @@
             // insertarUsuariosToolStripMenuItem
             // 
             insertarUsuariosToolStripMenuItem.Name = "insertarUsuariosToolStripMenuItem";
-            insertarUsuariosToolStripMenuItem.Size = new Size(216, 26);
+            insertarUsuariosToolStripMenuItem.Size = new Size(224, 26);
             insertarUsuariosToolStripMenuItem.Text = "Insertar usuarios";
             insertarUsuariosToolStripMenuItem.Click += insertarUsuariosToolStripMenuItem_Click;
             // 
             // buscarUsuariosToolStripMenuItem
             // 
             buscarUsuariosToolStripMenuItem.Name = "buscarUsuariosToolStripMenuItem";
-            buscarUsuariosToolStripMenuItem.Size = new Size(216, 26);
+            buscarUsuariosToolStripMenuItem.Size = new Size(224, 26);
             buscarUsuariosToolStripMenuItem.Text = "Buscar usuarios";
             buscarUsuariosToolStripMenuItem.Click += buscarUsuariosToolStripMenuItem_Click;
             // 
             // modificarUsuariosToolStripMenuItem
             // 
             modificarUsuariosToolStripMenuItem.Name = "modificarUsuariosToolStripMenuItem";
-            modificarUsuariosToolStripMenuItem.Size = new Size(216, 26);
+            modificarUsuariosToolStripMenuItem.Size = new Size(224, 26);
             modificarUsuariosToolStripMenuItem.Text = "Modificar Usuarios";
             modificarUsuariosToolStripMenuItem.Click += modificarUsuariosToolStripMenuItem_Click;
             // 
@@ -132,6 +133,13 @@
             newAdmBtn.UseVisualStyleBackColor = true;
             newAdmBtn.Click += newAdmBtn_Click;
             // 
+            // activarCajerosToolStripMenuItem
+            // 
+            activarCajerosToolStripMenuItem.Name = "activarCajerosToolStripMenuItem";
+            activarCajerosToolStripMenuItem.Size = new Size(224, 26);
+            activarCajerosToolStripMenuItem.Text = "Activar cajeros";
+            activarCajerosToolStripMenuItem.Click += activarCajerosToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -169,5 +177,6 @@
         private Label label2;
         private Label label1;
         private Button newAdmBtn;
+        private ToolStripMenuItem activarCajerosToolStripMenuItem;
     }
 }

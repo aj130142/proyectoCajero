@@ -172,5 +172,27 @@ namespace proyectoCajero
             }
         }
 
+        public class rutasJSOn
+        {
+            public string ruta()
+            {
+                string directorioEjecucion = AppDomain.CurrentDomain.BaseDirectory;
+
+                string palabra = "proyectoCajero";
+                string parteAntes = "";
+                int indice = directorioEjecucion.IndexOf(palabra);
+
+                if (indice != -1)
+                {
+                    parteAntes = directorioEjecucion.Substring(0, indice) + palabra; // Parte anterior
+                    string parteDespues = directorioEjecucion.Substring(indice + palabra.Length); // Parte posterior
+
+                    
+                }
+
+                return parteAntes;
+            }
+        }
+
     }
 }

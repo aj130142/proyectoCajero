@@ -1,3 +1,4 @@
+using System.Text.Json;
 using static proyectoCajero.archivosTxt;
 using static proyectoCajero.carpetas.IVercrearArchivo;
 using static proyectoCajero.conexion;
@@ -11,20 +12,31 @@ namespace proyectoCajero
         {
             InitializeComponent();
             administarToolStripMenuItem.Visible = true;//oculta el resto del menu hasta que inicies sesion, cambialo para tener acceso
-            
+
+        }
+        public class DataModel
+        {
+            public string Nombre { get; set; }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             verificarCarpeta();
-            Main();
+            
+
+            var ruta = new archivosTxt.rutasJSOn();
+            string ruta1 = ruta.ruta();
+            string rutaf = ruta1 + @"\" + "archivo.json";
+            var data = new DataModel { Nombre = "Ejemplo" };
+            string json = JsonSerializer.Serialize(data);
+            File.WriteAllText(rutaf, json);
 
         }
 
         private void insertarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             insertarUsuario ventanaInser = new insertarUsuario();
-            
+
             ventanaInser.Show(); // abrimos la ventana insertarUsuario
 
         }
@@ -82,24 +94,11 @@ namespace proyectoCajero
         {
             Application.Exit();
         }
-        static async Task Main()
+
+        private void activarCajerosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var servidor = new ServidorTCP("127.0.0.1", 5000);
-
-            servidor.OnMensajeRecibido += async (id, msg) =>
-            {
-                Console.WriteLine($"[{id}] dice: {msg}");
-
-                // Responder al cliente que envió
-                await servidor.Enviar(id, $"Servidor recibió: {msg}");
-            };
-
-            servidor.Iniciar();
-
-            Console.WriteLine("Servidor corriendo. Presiona ENTER para salir.");
-            Console.ReadLine();
-
-            servidor.Detener();
+            cajeroInicializar inicia= new cajeroInicializar();
+            inicia.Show();
         }
     }
 }

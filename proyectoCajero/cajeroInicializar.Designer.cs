@@ -31,12 +31,13 @@
             button1 = new Button();
             button2 = new Button();
             label1 = new Label();
+            cajero1Off = new Button();
             SuspendLayout();
             // 
             // button1
             // 
             button1.BackColor = Color.FromArgb(128, 255, 128);
-            button1.Location = new Point(126, 109);
+            button1.Location = new Point(49, 109);
             button1.Name = "button1";
             button1.Size = new Size(80, 80);
             button1.TabIndex = 0;
@@ -47,12 +48,13 @@
             // button2
             // 
             button2.BackColor = Color.FromArgb(128, 255, 128);
-            button2.Location = new Point(302, 109);
+            button2.Location = new Point(441, 109);
             button2.Name = "button2";
             button2.Size = new Size(80, 80);
             button2.TabIndex = 1;
             button2.Text = "Cajero 2";
             button2.UseVisualStyleBackColor = false;
+            button2.Click += button2_Click;
             // 
             // label1
             // 
@@ -63,11 +65,23 @@
             label1.TabIndex = 2;
             label1.Text = "Presione un boton activar ";
             // 
+            // cajero1Off
+            // 
+            cajero1Off.BackColor = Color.FromArgb(128, 255, 128);
+            cajero1Off.Location = new Point(167, 109);
+            cajero1Off.Name = "cajero1Off";
+            cajero1Off.Size = new Size(80, 80);
+            cajero1Off.TabIndex = 3;
+            cajero1Off.Text = "Cajero 1";
+            cajero1Off.UseVisualStyleBackColor = false;
+            cajero1Off.Click += cajero1Off_Click;
+            // 
             // cajeroInicializar
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(cajero1Off);
             Controls.Add(label1);
             Controls.Add(button2);
             Controls.Add(button1);
@@ -82,5 +96,6 @@
         private Button button1;
         private Button button2;
         private Label label1;
+        private Button cajero1Off;
     }
 }
