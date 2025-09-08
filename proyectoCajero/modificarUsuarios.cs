@@ -16,7 +16,7 @@ namespace proyectoCajero
 {
     public partial class modificarUsuarios : Form
     {
-        public static List<string> listaUsu = new List<string>();//lista global para guardar datos de los usuarios
+        public static List<Usuario> listaUsu = new List<Usuario>();
         string pathF;
         public modificarUsuarios()
         {
@@ -61,48 +61,87 @@ namespace proyectoCajero
 
         private void modificarUsuarios_Load(object sender, EventArgs e)
         {
-            string cargarUsuario = "usuario.txt"; //nombre del archivo de la carpeta a buscar
-            pathF = direccione.obtenerRutasTxt(cargarUsuario);//ingresamos el nombre del archivo y obtenemos la ruta completa del usuario.txt
-            listaUsu = leerTxt.obtenerDatosTxt(pathF);//con la ruta obtenemos una lista global para guardar todos los datos de los usuarios
+            string cargarUsuario = "usuario.txt";
+            pathF = direccione.obtenerRutasTxt(cargarUsuario);
+            // Ahora cargamos directamente una lista de objetos Usuario
+            listaUsu = ManejadorArchivosUsuario.LeerUsuarios(pathF);
         }
 
         private void okeyBtn_Click(object sender, EventArgs e)
         {
-            List<string> historialPin=new List<string>();
             string nombreBuscar = nameTB.Text;
-            string VhistorialPIn = "historialPin";
-            string maXSaldo = "";
-            string newTarjeta = "";
-            int indexUser = listaUsu.FindIndex(n => n == nombreBuscar);
-            
-            
 
-            if (maxSaldoTB.Enabled && tarjetaNewTB.Enabled)
+            if (string.IsNullOrWhiteSpace(nombreBuscar))
             {
-
-                maXSaldo = maxSaldoTB.Text;
-                listaUsu[indexUser + 4] = maXSaldo;
-                newTarjeta = tarjetaNewTB.Text;
-                listaUsu[indexUser + 1] = newTarjeta;
-                
+                MessageBox.Show("Por favor, ingrese el nombre del usuario a modificar.");
+                return;
             }
 
-            if (maxSaldoTB.Enabled)
+            // --- PASO 1: Buscar el usuario en la lista ---
+            // Usamos LINQ para encontrar el objeto Usuario completo que coincida con el nombre.
+            Usuario usuarioAModificar = listaUsu.FirstOrDefault(u => u.Nombre.Equals(nombreBuscar, StringComparison.OrdinalIgnoreCase));
+
+            if (usuarioAModificar == null)
             {
-                maXSaldo = maxSaldoTB.Text;
-                listaUsu[indexUser + 4] = maXSaldo;
+                MessageBox.Show("No se encontró ningún usuario con ese nombre.");
+                return;
             }
 
-            if (tarjetaNewTB.Enabled)
-            {
-                newTarjeta = tarjetaNewTB.Text;
-                listaUsu[indexUser + 1] = newTarjeta;
-            }
-            File.WriteAllLines(pathF, listaUsu);
+            // --- PASO 2: Realizar las modificaciones ---
+            // Verificamos qué checkboxes están activos y actualizamos las propiedades del objeto.
+            bool cambiosRealizados = false;
 
+            if (modTarjCheckB.Checked)
+            {
+                string nuevaTarjeta = tarjetaNewTB.Text;
+                if (nuevaTarjeta.Length != 16 || !long.TryParse(nuevaTarjeta, out _))
+                {
+                    MessageBox.Show("El nuevo número de tarjeta debe ser de 16 dígitos numéricos.");
+                    return;
+                }
+                // Verificamos que la nueva tarjeta no pertenezca ya a otro usuario.
+                if (listaUsu.Any(u => u.NumeroTarjeta == nuevaTarjeta && u.Nombre != nombreBuscar))
+                {
+                    MessageBox.Show("Ese número de tarjeta ya está asignado a otro usuario.");
+                    return;
+                }
+                usuarioAModificar.NumeroTarjeta = nuevaTarjeta;
+                cambiosRealizados = true;
+            }
+
+            if (modMaxSaldoCheckB.Checked)
+            {
+                if (!decimal.TryParse(maxSaldoTB.Text, out decimal nuevoMaxSaldo))
+                {
+                    MessageBox.Show("El nuevo límite de saldo debe ser un valor numérico válido.");
+                    return;
+                }
+                usuarioAModificar.MontoMaximoDiario = nuevoMaxSaldo;
+                cambiosRealizados = true;
+            }
+
+            // --- PASO 3: Guardar los cambios (solo si se hizo alguno) ---
+            if (cambiosRealizados)
+            {
+                // El pathF fue definido cuando se cargó el formulario.
+                ManejadorArchivosUsuario.EscribirUsuarios(pathF, listaUsu);
+                MessageBox.Show("¡Usuario modificado exitosamente!");
+            }
+            else
+            {
+                MessageBox.Show("No se seleccionó ninguna opción para modificar.");
+                return;
+            }
+
+            // --- PASO 4: Limpiar la interfaz ---
+            nameTB.Clear();
             tarjetaNewTB.Clear();
             maxSaldoTB.Clear();
 
+            // Desactivar checkboxes para la siguiente operación
+            allSelect.Checked = false;
+            modTarjCheckB.Checked = false;
+            modMaxSaldoCheckB.Checked = false;
         }
 
         private void allSelect_CheckedChanged(object sender, EventArgs e)

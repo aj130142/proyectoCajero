@@ -195,4 +195,81 @@ namespace proyectoCajero
         }
 
     }
+
+    // Esta clase se especializará en leer y escribir la lista de usuarios.
+    public static class ManejadorArchivosUsuario
+    {
+        /// <summary>
+        /// Lee el archivo de usuarios y lo convierte en una lista de objetos Usuario.
+        /// </summary>
+        /// <param name="path">La ruta completa del archivo usuario.txt</param>
+        /// <returns>Una lista de objetos Usuario.</returns>
+        public static List<Usuario> LeerUsuarios(string path)
+        {
+            var listaUsuarios = new List<Usuario>();
+
+            if (!File.Exists(path))
+            {
+                // Si el archivo no existe, simplemente devolvemos una lista vacía.
+                return listaUsuarios;
+            }
+
+            var lineas = File.ReadAllLines(path).ToList();
+
+            // Cada usuario ocupa 6 líneas en el archivo.
+            // Recorremos la lista de líneas de 6 en 6.
+            for (int i = 0; i < lineas.Count; i += 6)
+            {
+                // Nos aseguramos de que haya suficientes líneas para un usuario completo.
+                if (i + 5 < lineas.Count)
+                {
+                    var usuario = new Usuario();
+
+                    // Intentamos convertir cada línea al tipo de dato correspondiente.
+                    // Usar TryParse es más seguro que Parse, ya que no lanza un error si el formato es incorrecto.
+                    int.TryParse(lineas[i], out int id);
+                    usuario.Id = id;
+
+                    usuario.Nombre = lineas[i + 1];
+                    usuario.NumeroTarjeta = lineas[i + 2];
+                    usuario.PIN = lineas[i + 3];
+
+                    decimal.TryParse(lineas[i + 4], out decimal saldo);
+                    usuario.SaldoActual = saldo;
+
+                    decimal.TryParse(lineas[i + 5], out decimal maxDiario);
+                    usuario.MontoMaximoDiario = maxDiario;
+
+                    // Añadimos el objeto usuario completamente formado a nuestra lista.
+                    listaUsuarios.Add(usuario);
+                }
+            }
+
+            return listaUsuarios;
+        }
+
+        /// <summary>
+        /// Escribe una lista de objetos Usuario en el archivo de texto, sobrescribiendo el contenido anterior.
+        /// </summary>
+        /// <param name="path">La ruta completa del archivo usuario.txt</param>
+        /// <param name="listaUsuarios">La lista de usuarios a guardar.</param>
+        public static void EscribirUsuarios(string path, List<Usuario> listaUsuarios)
+        {
+            var lineasParaEscribir = new List<string>();
+
+            foreach (var usuario in listaUsuarios)
+            {
+                lineasParaEscribir.Add(usuario.Id.ToString());
+                lineasParaEscribir.Add(usuario.Nombre);
+                lineasParaEscribir.Add(usuario.NumeroTarjeta);
+                lineasParaEscribir.Add(usuario.PIN);
+                lineasParaEscribir.Add(usuario.SaldoActual.ToString()); // Convertimos el decimal a string
+                lineasParaEscribir.Add(usuario.MontoMaximoDiario.ToString()); // Convertimos el decimal a string
+            }
+
+            // File.WriteAllLines se encarga de abrir el archivo, escribir todas las líneas
+            // y cerrarlo de forma segura. Sobrescribe el archivo si ya existe.
+            File.WriteAllLines(path, lineasParaEscribir);
+        }
+    }
 }
