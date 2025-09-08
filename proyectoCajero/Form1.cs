@@ -2,6 +2,7 @@ using System.Text.Json;
 using static proyectoCajero.archivosTxt;
 using static proyectoCajero.carpetas.IVercrearArchivo;
 using static proyectoCajero.conexion;
+using static proyectoCajero.cajeroInicializar;
 
 namespace proyectoCajero
 {
@@ -22,7 +23,7 @@ namespace proyectoCajero
         private void Form1_Load(object sender, EventArgs e)
         {
             verificarCarpeta();
-            
+
 
             var ruta = new archivosTxt.rutasJSOn();
             string ruta1 = ruta.ruta();
@@ -97,8 +98,32 @@ namespace proyectoCajero
 
         private void activarCajerosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            cajeroInicializar inicia= new cajeroInicializar();
-            inicia.Show();
+            cajeroInicializar inicia = new cajeroInicializar(CajeroFormMode.Inicializar);
+            inicia.ShowDialog(); // Usar ShowDialog es mejor para ventanas que deben completarse
+        }
+
+        private void agregarEfectivoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Abrimos el mismo formulario, pero en modo Agregar
+            cajeroInicializar agrega = new cajeroInicializar(CajeroFormMode.Agregar);
+            agrega.ShowDialog();
+        }
+
+        private void btnModoUsuario_Click(object sender, EventArgs e)
+        {
+            // Creamos una instancia del nuevo formulario de login
+            LoginUsuario ventanaLoginUsuario = new LoginUsuario();
+
+            // Ocultamos la ventana principal de administración
+            this.Hide();
+
+            // Mostramos el formulario de login. Usamos ShowDialog para que la ejecución
+            // se detenga aquí hasta que el usuario cierre la ventana de login.
+            ventanaLoginUsuario.ShowDialog();
+
+            // Una vez que la ventana de login se cierra (ya sea por éxito o cancelación),
+            // volvemos a mostrar la ventana principal de administración.
+            this.Show();
         }
     }
 }

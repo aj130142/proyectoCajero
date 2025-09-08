@@ -33,13 +33,15 @@
             insertarUsuariosToolStripMenuItem = new ToolStripMenuItem();
             buscarUsuariosToolStripMenuItem = new ToolStripMenuItem();
             modificarUsuariosToolStripMenuItem = new ToolStripMenuItem();
+            activarCajerosToolStripMenuItem = new ToolStripMenuItem();
+            agregarEfectivoToolStripMenuItem = new ToolStripMenuItem();
             sesionBtn = new Button();
             contAdm = new TextBox();
             admName = new TextBox();
             label2 = new Label();
             label1 = new Label();
             newAdmBtn = new Button();
-            activarCajerosToolStripMenuItem = new ToolStripMenuItem();
+            btnModoUsuario = new Button();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -55,7 +57,7 @@
             // 
             // administarToolStripMenuItem
             // 
-            administarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { insertarUsuariosToolStripMenuItem, buscarUsuariosToolStripMenuItem, modificarUsuariosToolStripMenuItem, activarCajerosToolStripMenuItem });
+            administarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { insertarUsuariosToolStripMenuItem, buscarUsuariosToolStripMenuItem, modificarUsuariosToolStripMenuItem, activarCajerosToolStripMenuItem, agregarEfectivoToolStripMenuItem });
             administarToolStripMenuItem.Name = "administarToolStripMenuItem";
             administarToolStripMenuItem.Size = new Size(95, 24);
             administarToolStripMenuItem.Text = "Administar";
@@ -80,6 +82,20 @@
             modificarUsuariosToolStripMenuItem.Size = new Size(224, 26);
             modificarUsuariosToolStripMenuItem.Text = "Modificar Usuarios";
             modificarUsuariosToolStripMenuItem.Click += modificarUsuariosToolStripMenuItem_Click;
+            // 
+            // activarCajerosToolStripMenuItem
+            // 
+            activarCajerosToolStripMenuItem.Name = "activarCajerosToolStripMenuItem";
+            activarCajerosToolStripMenuItem.Size = new Size(224, 26);
+            activarCajerosToolStripMenuItem.Text = "Activar cajeros";
+            activarCajerosToolStripMenuItem.Click += activarCajerosToolStripMenuItem_Click;
+            // 
+            // agregarEfectivoToolStripMenuItem
+            // 
+            agregarEfectivoToolStripMenuItem.Name = "agregarEfectivoToolStripMenuItem";
+            agregarEfectivoToolStripMenuItem.Size = new Size(224, 26);
+            agregarEfectivoToolStripMenuItem.Text = "Agregar Efectivo";
+            agregarEfectivoToolStripMenuItem.Click += agregarEfectivoToolStripMenuItem_Click;
             // 
             // sesionBtn
             // 
@@ -133,18 +149,22 @@
             newAdmBtn.UseVisualStyleBackColor = true;
             newAdmBtn.Click += newAdmBtn_Click;
             // 
-            // activarCajerosToolStripMenuItem
+            // btnModoUsuario
             // 
-            activarCajerosToolStripMenuItem.Name = "activarCajerosToolStripMenuItem";
-            activarCajerosToolStripMenuItem.Size = new Size(224, 26);
-            activarCajerosToolStripMenuItem.Text = "Activar cajeros";
-            activarCajerosToolStripMenuItem.Click += activarCajerosToolStripMenuItem_Click;
+            btnModoUsuario.Location = new Point(625, 49);
+            btnModoUsuario.Name = "btnModoUsuario";
+            btnModoUsuario.Size = new Size(146, 113);
+            btnModoUsuario.TabIndex = 11;
+            btnModoUsuario.Text = "Modo Usuario";
+            btnModoUsuario.UseVisualStyleBackColor = true;
+            btnModoUsuario.Click += btnModoUsuario_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnModoUsuario);
             Controls.Add(newAdmBtn);
             Controls.Add(sesionBtn);
             Controls.Add(contAdm);
@@ -178,5 +198,7 @@
         private Label label1;
         private Button newAdmBtn;
         private ToolStripMenuItem activarCajerosToolStripMenuItem;
+        private ToolStripMenuItem agregarEfectivoToolStripMenuItem;
+        private Button btnModoUsuario;
     }
 }

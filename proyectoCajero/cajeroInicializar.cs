@@ -13,13 +13,21 @@ using static proyectoCajero.archivosTxt;
 
 namespace proyectoCajero
 {
+    public enum CajeroFormMode
+    {
+        Inicializar,
+        Agregar
+    }
     public partial class cajeroInicializar : Form
     {
+        private readonly CajeroFormMode _mode;
+        private Cajero _cajeroActual;
         public int contador = 0;
-        public cajeroInicializar()
+        public cajeroInicializar(CajeroFormMode mode)
         {
-            InitializeComponent();
-
+            InitializeComponent();    
+            _mode = mode; // Guardamos el modo
+            SetupForm();  // Llamamos a un método para configurar la apariencia
         }
         public class DataModel
         {
@@ -31,24 +39,30 @@ namespace proyectoCajero
 
         private void ActualizarTotal()
         {
-            // Obtenemos el valor de cada NumericUpDown
-            decimal total = (num200.Value * 200) + (num100.Value * 100) +
-                            (num50.Value * 50) + (num20.Value * 20) +
-                            (num10.Value * 10) + (num5.Value * 5) +
-                            (num1.Value * 1);
+            decimal totalNuevo = (num200.Value * 200) + (num100.Value * 100) +
+                        (num50.Value * 50) + (num20.Value * 20) +
+                        (num10.Value * 10) + (num5.Value * 5) +
+                        (num1.Value * 1);
 
-            // Actualizamos el texto del Label y le damos formato de moneda
-            lblTotal.Text = $"Total: {total:C}"; // "C" es para formato de moneda (Q)
+            decimal totalFinal;
+            decimal limite;
 
-            // Opcional: Cambia el color del texto si se excede del límite
-            if (total > 10000)
+            if (_mode == CajeroFormMode.Agregar && _cajeroActual != null)
             {
-                lblTotal.ForeColor = System.Drawing.Color.Red;
+                totalFinal = _cajeroActual.TotalEfectivo + totalNuevo;
+                limite = 30000;
+                lblTotal.Text = $"Total Actual: {_cajeroActual.TotalEfectivo:C}\n" +
+                              $"Monto a Agregar: {totalNuevo:C}\n" +
+                              $"Nuevo Total: {totalFinal:C}";
             }
-            else
+            else // Modo Inicializar
             {
-                lblTotal.ForeColor = System.Drawing.Color.Black;
+                totalFinal = totalNuevo;
+                limite = 10000;
+                lblTotal.Text = $"Total: {totalFinal:C}";
             }
+
+            lblTotal.ForeColor = totalFinal > limite ? System.Drawing.Color.Red : System.Drawing.Color.Black;
         }
 
         private void num200_ValueChanged(object sender, EventArgs e)
@@ -89,45 +103,103 @@ namespace proyectoCajero
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            // Creamos una nueva instancia del objeto Cajero.
-            var cajero = new Cajero();
+            Cajero cajeroParaGuardar;
+            decimal limite;
+            string mensajeErrorLimite;
 
-            // Llenamos el diccionario de billetes con los valores de los NumericUpDown.
-            // Usamos (int) para convertir el valor decimal del control a un entero.
-            cajero.Billetes.Add(200, (int)num200.Value);
-            cajero.Billetes.Add(100, (int)num100.Value);
-            cajero.Billetes.Add(50, (int)num50.Value);
-            cajero.Billetes.Add(20, (int)num20.Value);
-            cajero.Billetes.Add(10, (int)num10.Value);
-            cajero.Billetes.Add(5, (int)num5.Value);
-            cajero.Billetes.Add(1, (int)num1.Value);
-
-            // Validamos que el total no exceda el límite de inicialización.
-            if (cajero.TotalEfectivo > 10000)
+            if (_mode == CajeroFormMode.Inicializar)
             {
-                MessageBox.Show("El monto total para inicializar el cajero no puede exceder Q. 10,000.00", "Límite Excedido", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return; // Detenemos la operación.
+                cajeroParaGuardar = new Cajero();
+                cajeroParaGuardar.Billetes.Add(200, (int)num200.Value);
+                cajeroParaGuardar.Billetes.Add(100, (int)num100.Value);
+                cajeroParaGuardar.Billetes.Add(50, (int)num50.Value);
+                cajeroParaGuardar.Billetes.Add(20, (int)num20.Value);
+                cajeroParaGuardar.Billetes.Add(10, (int)num10.Value);
+                cajeroParaGuardar.Billetes.Add(5, (int)num5.Value);
+                cajeroParaGuardar.Billetes.Add(1, (int)num1.Value);
+                limite = 10000;
+                mensajeErrorLimite = "El monto total para inicializar no puede exceder Q. 10,000.00";
+            }
+            else // Modo Agregar
+            {
+                if (_cajeroActual == null) return; // No debería pasar si el form cargó bien
+                cajeroParaGuardar = _cajeroActual; // Empezamos con el estado actual
+
+                // Sumamos los nuevos billetes a los existentes
+                cajeroParaGuardar.Billetes[200] += (int)num200.Value;
+                cajeroParaGuardar.Billetes[100] += (int)num100.Value;
+                cajeroParaGuardar.Billetes[50] += (int)num50.Value;
+                cajeroParaGuardar.Billetes[20] += (int)num20.Value;
+                cajeroParaGuardar.Billetes[10] += (int)num10.Value;
+                cajeroParaGuardar.Billetes[5] += (int)num5.Value;
+                cajeroParaGuardar.Billetes[1] += (int)num1.Value;
+                limite = 30000;
+                mensajeErrorLimite = "El monto total en el cajero no puede exceder Q. 30,000.00";
+            }
+
+            if (cajeroParaGuardar.TotalEfectivo > limite)
+            {
+                MessageBox.Show(mensajeErrorLimite, "Límite Excedido", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Importante: Si hay error, revertimos los cambios en modo Agregar para no corromper el estado
+                if (_mode == CajeroFormMode.Agregar) CargarEstadoActualCajero();
+                return;
             }
 
             try
             {
-                // Guardamos el estado del cajero en un archivo JSON.
                 string nombreArchivo = "cajero.json";
-                // Usamos la misma utilidad de direcciones que ya tienes.
                 string pathFinal = direccione.obtenerRutasTxt(nombreArchivo);
-
-                // Opciones para que el JSON se vea bonito (indentado).
                 var opcionesJson = new JsonSerializerOptions { WriteIndented = true };
-                string jsonString = JsonSerializer.Serialize(cajero, opcionesJson);
-
+                string jsonString = JsonSerializer.Serialize(cajeroParaGuardar, opcionesJson);
                 File.WriteAllText(pathFinal, jsonString);
 
-                MessageBox.Show($"Cajero inicializado exitosamente con {cajero.TotalEfectivo:C}", "Operación Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Close(); // Cierra la ventana después de guardar.
+                MessageBox.Show($"Operación exitosa. Nuevo total en cajero: {cajeroParaGuardar.TotalEfectivo:C}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocurrió un error al guardar el estado del cajero: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Ocurrió un error al guardar el estado del cajero: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetupForm()
+        {
+            if (_mode == CajeroFormMode.Inicializar)
+            {
+                this.Text = "Inicializar Cajero";
+                btnGuardar.Text = "Inicializar";
+            }
+            else // Modo Agregar
+            {
+                this.Text = "Agregar Efectivo";
+                btnGuardar.Text = "Agregar";
+                CargarEstadoActualCajero();
+            }
+        }
+
+        private void CargarEstadoActualCajero()
+        {
+            string nombreArchivo = "cajero.json";
+            string pathFinal = direccione.obtenerRutasTxt(nombreArchivo);
+
+            if (!File.Exists(pathFinal))
+            {
+                MessageBox.Show("El cajero aún no ha sido inicializado. Debe inicializarlo antes de poder agregar efectivo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Cerramos el formulario si no hay nada que agregar.
+                // Usamos BeginInvoke para cerrar de forma segura después de que el formulario termine de cargarse.
+                this.BeginInvoke(new Action(() => this.Close()));
+                return;
+            }
+
+            try
+            {
+                string jsonString = File.ReadAllText(pathFinal);
+                _cajeroActual = JsonSerializer.Deserialize<Cajero>(jsonString);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al leer el estado actual del cajero: " + ex.Message);
+                this.BeginInvoke(new Action(() => this.Close()));
             }
         }
     }

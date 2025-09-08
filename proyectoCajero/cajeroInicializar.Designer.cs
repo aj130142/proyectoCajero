@@ -56,9 +56,10 @@
             // lblTotal
             // 
             lblTotal.AutoSize = true;
-            lblTotal.Location = new Point(176, 330);
+            lblTotal.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTotal.Location = new Point(466, 102);
             lblTotal.Name = "lblTotal";
-            lblTotal.Size = new Size(94, 20);
+            lblTotal.Size = new Size(124, 28);
             lblTotal.TabIndex = 2;
             lblTotal.Text = "Total: Q. 0.00";
             // 

@@ -272,4 +272,54 @@ namespace proyectoCajero
             File.WriteAllLines(path, lineasParaEscribir);
         }
     }
+
+    public static class ManejadorArchivosTransaccion
+    {
+        // Usaremos un formato simple separado por comas (CSV)
+        // Ejemplo de línea: 2025-09-08T10:30:00,1111222233334444,Retiro,500.00
+        private const string SEPARADOR = ",";
+
+        public static List<Transaccion> LeerTransacciones(string path)
+        {
+            var listaTransacciones = new List<Transaccion>();
+            if (!File.Exists(path))
+            {
+                return listaTransacciones;
+            }
+
+            var lineas = File.ReadAllLines(path);
+            foreach (var linea in lineas)
+            {
+                var partes = linea.Split(SEPARADOR);
+                if (partes.Length == 4)
+                {
+                    var transaccion = new Transaccion();
+                    DateTime.TryParse(partes[0], out DateTime fecha);
+                    transaccion.FechaHora = fecha;
+                    transaccion.NumeroTarjeta = partes[1];
+                    Enum.TryParse(partes[2], out TipoTransaccion tipo);
+                    transaccion.Tipo = tipo;
+                    decimal.TryParse(partes[3], out decimal monto);
+                    transaccion.Monto = monto;
+                    listaTransacciones.Add(transaccion);
+                }
+            }
+            return listaTransacciones;
+        }
+
+        // Este método lo usaremos más adelante en el Área de Usuario para GUARDAR transacciones
+        public static void AgregarTransaccion(string path, Transaccion transaccion)
+        {
+            string linea = string.Join(SEPARADOR,
+                // Formato estándar ISO 8601 para fechas, fácil de leer por máquinas
+                transaccion.FechaHora.ToString("o"),
+                transaccion.NumeroTarjeta,
+                transaccion.Tipo,
+                transaccion.Monto
+            );
+
+            // Usamos File.AppendAllText para añadir la nueva transacción al final sin borrar las anteriores
+            File.AppendAllText(path, linea + Environment.NewLine);
+        }
+    }
 }
