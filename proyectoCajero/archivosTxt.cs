@@ -291,15 +291,19 @@ namespace proyectoCajero
             foreach (var linea in lineas)
             {
                 var partes = linea.Split(SEPARADOR);
-                if (partes.Length == 4)
+                // Ahora esperamos 5 partes en lugar de 4
+                if (partes.Length == 5) // <--- CAMBIADO DE 4 a 5
                 {
                     var transaccion = new Transaccion();
-                    DateTime.TryParse(partes[0], out DateTime fecha);
+                    int.TryParse(partes[0], out int id); // <--- AÑADIDO
+                    transaccion.UsuarioId = id;         // <--- AÑADIDO
+
+                    DateTime.TryParse(partes[1], out DateTime fecha);
                     transaccion.FechaHora = fecha;
-                    transaccion.NumeroTarjeta = partes[1];
-                    Enum.TryParse(partes[2], out TipoTransaccion tipo);
+                    transaccion.NumeroTarjeta = partes[2];
+                    Enum.TryParse(partes[3], out TipoTransaccion tipo);
                     transaccion.Tipo = tipo;
-                    decimal.TryParse(partes[3], out decimal monto);
+                    decimal.TryParse(partes[4], out decimal monto);
                     transaccion.Monto = monto;
                     listaTransacciones.Add(transaccion);
                 }
@@ -311,7 +315,7 @@ namespace proyectoCajero
         public static void AgregarTransaccion(string path, Transaccion transaccion)
         {
             string linea = string.Join(SEPARADOR,
-                // Formato estándar ISO 8601 para fechas, fácil de leer por máquinas
+                transaccion.UsuarioId,
                 transaccion.FechaHora.ToString("o"),
                 transaccion.NumeroTarjeta,
                 transaccion.Tipo,
@@ -329,6 +333,32 @@ namespace proyectoCajero
         {
             string registro = $"{DateTime.Now:o},{numeroTarjeta}";
             File.AppendAllText(path, registro + Environment.NewLine);
+        }
+        public static void RegistrarCambioTarjeta(string path, string nombreUsuario, string tarjetaAntigua, string tarjetaNueva)
+        {
+            string registro = $"{DateTime.Now:o},{nombreUsuario},{tarjetaAntigua},{tarjetaNueva}";
+            File.AppendAllText(path, registro + Environment.NewLine);
+        }
+        public static List<string> LeerLogCambioPin(string path)
+        {
+            var listaTarjetas = new List<string>();
+            if (!File.Exists(path))
+            {
+                return listaTarjetas;
+            }
+
+            var lineas = File.ReadAllLines(path);
+            foreach (var linea in lineas)
+            {
+                var partes = linea.Split(',');
+                // partes[0] es la fecha, partes[1] es el número de tarjeta
+                if (partes.Length == 2)
+                {
+                    listaTarjetas.Add(partes[1]);
+                }
+            }
+            // Devolvemos solo los números de tarjeta, eliminando duplicados
+            return listaTarjetas.Distinct().ToList();
         }
     }
 }

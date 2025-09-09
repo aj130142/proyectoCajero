@@ -93,20 +93,29 @@ namespace proyectoCajero
 
             if (modTarjCheckB.Checked)
             {
+                // 1. Guardar el número antiguo ANTES de cambiarlo
+                string tarjetaAntigua = usuarioAModificar.NumeroTarjeta;
                 string nuevaTarjeta = tarjetaNewTB.Text;
+
+                // 2. Realizar todas las validaciones sobre la nueva tarjeta
                 if (nuevaTarjeta.Length != 16 || !long.TryParse(nuevaTarjeta, out _))
                 {
                     MessageBox.Show("El nuevo número de tarjeta debe ser de 16 dígitos numéricos.");
                     return;
                 }
-                // Verificamos que la nueva tarjeta no pertenezca ya a otro usuario.
                 if (listaUsu.Any(u => u.NumeroTarjeta == nuevaTarjeta && u.Nombre != nombreBuscar))
                 {
                     MessageBox.Show("Ese número de tarjeta ya está asignado a otro usuario.");
                     return;
                 }
+
+                // 3. Asignar el nuevo valor
                 usuarioAModificar.NumeroTarjeta = nuevaTarjeta;
                 cambiosRealizados = true;
+
+                // 4. Registrar el cambio en un log
+                string pathLog = direccione.obtenerRutasTxt("log_cambio_tarjeta.txt");
+                ManejadorLogs.RegistrarCambioTarjeta(pathLog, usuarioAModificar.Nombre, tarjetaAntigua, nuevaTarjeta);
             }
 
             if (modMaxSaldoCheckB.Checked)

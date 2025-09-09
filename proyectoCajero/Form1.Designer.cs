@@ -87,7 +87,7 @@
             // 
             activarCajerosToolStripMenuItem.Name = "activarCajerosToolStripMenuItem";
             activarCajerosToolStripMenuItem.Size = new Size(224, 26);
-            activarCajerosToolStripMenuItem.Text = "Activar cajeros";
+            activarCajerosToolStripMenuItem.Text = "Inicializar cajero";
             activarCajerosToolStripMenuItem.Click += activarCajerosToolStripMenuItem_Click;
             // 
             // agregarEfectivoToolStripMenuItem

@@ -29,7 +29,7 @@ namespace proyectoCajero
 
             decimal retiradoHoy = todasLasTransacciones
                 .Where(t =>
-                    t.NumeroTarjeta == _usuarioActual.NumeroTarjeta && // Transacciones de este usuario
+                    t.UsuarioId == _usuarioActual.Id && // Transacciones de este usuario
                     t.Tipo == TipoTransaccion.Retiro &&                 // que sean retiros
                     t.FechaHora.Date == DateTime.Today)                // y que sean de hoy
                 .Sum(t => t.Monto);                                    // Sumar los montos
@@ -83,7 +83,7 @@ namespace proyectoCajero
 
             // 2. Filtrar, Ordenar y Seleccionar las transacciones del usuario
             var ultimasTransacciones = todasLasTransacciones
-                .Where(t => t.NumeroTarjeta == _usuarioActual.NumeroTarjeta) // Filtrar por el usuario actual
+                .Where(t => t.UsuarioId == _usuarioActual.Id) // Filtrar por el usuario actual t.NumeroTarjeta == _usuarioActual.NumeroTarjeta
                 .OrderByDescending(t => t.FechaHora)                         // Ordenar de la más reciente a la más antigua
                 .Take(5)                                                     // Tomar solo las primeras 5
                 .ToList();                                                   // Convertir el resultado a una lista

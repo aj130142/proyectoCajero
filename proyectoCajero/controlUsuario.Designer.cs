@@ -54,14 +54,14 @@
             // 
             // txtBuscarUsuario
             // 
-            txtBuscarUsuario.Location = new Point(181, 38);
+            txtBuscarUsuario.Location = new Point(6, 54);
             txtBuscarUsuario.Name = "txtBuscarUsuario";
-            txtBuscarUsuario.Size = new Size(177, 27);
+            txtBuscarUsuario.Size = new Size(256, 27);
             txtBuscarUsuario.TabIndex = 3;
             // 
             // btnBuscar
             // 
-            btnBuscar.Location = new Point(364, 33);
+            btnBuscar.Location = new Point(268, 49);
             btnBuscar.Name = "btnBuscar";
             btnBuscar.Size = new Size(77, 37);
             btnBuscar.TabIndex = 2;
@@ -73,7 +73,7 @@
             // 
             lblInfoUsuario.AutoSize = true;
             lblInfoUsuario.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblInfoUsuario.Location = new Point(6, 74);
+            lblInfoUsuario.Location = new Point(6, 84);
             lblInfoUsuario.Name = "lblInfoUsuario";
             lblInfoUsuario.Size = new Size(117, 28);
             lblInfoUsuario.TabIndex = 1;
@@ -82,11 +82,11 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(19, 41);
+            label3.Location = new Point(6, 23);
             label3.Name = "label3";
-            label3.Size = new Size(142, 20);
+            label3.Size = new Size(237, 20);
             label3.TabIndex = 0;
-            label3.Text = "Nombre de Usuario:";
+            label3.Text = "Buscar Usuario (por Nombre o ID):";
             // 
             // groupBox2
             // 

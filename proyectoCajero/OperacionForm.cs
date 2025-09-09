@@ -122,7 +122,7 @@ namespace proyectoCajero
                     usuarioParaActualizar.SaldoActual += montoTotal;
                     this.UsuarioActualizado = usuarioParaActualizar;
 
-                    var nuevaTransaccion = new Transaccion { FechaHora = DateTime.Now, NumeroTarjeta = _usuario.NumeroTarjeta, Tipo = TipoTransaccion.Deposito, Monto = montoTotal };
+                    var nuevaTransaccion = new Transaccion { UsuarioId = _usuario.Id, FechaHora = DateTime.Now, NumeroTarjeta = _usuario.NumeroTarjeta, Tipo = TipoTransaccion.Deposito, Monto = montoTotal };
 
                     File.WriteAllText(pathCajero, JsonSerializer.Serialize(cajero, new JsonSerializerOptions { WriteIndented = true }));
                     ManejadorArchivosUsuario.EscribirUsuarios(pathUsuarios, todosLosUsuarios);
@@ -187,7 +187,7 @@ namespace proyectoCajero
                     usuarioParaActualizar.SaldoActual -= montoTotal;
                     this.UsuarioActualizado = usuarioParaActualizar;
 
-                    var nuevaTransaccion = new Transaccion { FechaHora = DateTime.Now, NumeroTarjeta = _usuario.NumeroTarjeta, Tipo = TipoTransaccion.Retiro, Monto = montoTotal };
+                    var nuevaTransaccion = new Transaccion { UsuarioId = _usuario.Id, FechaHora = DateTime.Now, NumeroTarjeta = _usuario.NumeroTarjeta, Tipo = TipoTransaccion.Retiro, Monto = montoTotal };
 
                     File.WriteAllText(pathCajero, JsonSerializer.Serialize(cajero, new JsonSerializerOptions { WriteIndented = true }));
                     ManejadorArchivosUsuario.EscribirUsuarios(pathUsuarios, todosLosUsuarios);
