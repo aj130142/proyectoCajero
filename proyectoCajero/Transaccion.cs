@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace proyectoCajero
 {
+    public enum TipoOperacion
+    {
+        Deposito,
+        Retiro
+    }
+
     public enum TipoTransaccion
     {
         Retiro,

@@ -315,11 +315,20 @@ namespace proyectoCajero
                 transaccion.FechaHora.ToString("o"),
                 transaccion.NumeroTarjeta,
                 transaccion.Tipo,
-                transaccion.Monto
+                transaccion.Monto.ToString() // Es buena práctica usar .ToString() para el decimal
             );
 
             // Usamos File.AppendAllText para añadir la nueva transacción al final sin borrar las anteriores
             File.AppendAllText(path, linea + Environment.NewLine);
+        }
+    }
+
+    public static class ManejadorLogs
+    {
+        public static void RegistrarCambioPin(string path, string numeroTarjeta)
+        {
+            string registro = $"{DateTime.Now:o},{numeroTarjeta}";
+            File.AppendAllText(path, registro + Environment.NewLine);
         }
     }
 }

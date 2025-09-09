@@ -71,6 +71,7 @@
             btnCambiarPin.TabIndex = 4;
             btnCambiarPin.Text = "Cambiar PIN";
             btnCambiarPin.UseVisualStyleBackColor = true;
+            btnCambiarPin.Click += btnCambiarPin_Click;
             // 
             // btnVerSaldo
             // 
@@ -80,6 +81,7 @@
             btnVerSaldo.TabIndex = 3;
             btnVerSaldo.Text = "Consultar Saldo";
             btnVerSaldo.UseVisualStyleBackColor = true;
+            btnVerSaldo.Click += btnVerSaldo_Click;
             // 
             // btnUltimasTransacciones
             // 
@@ -89,6 +91,7 @@
             btnUltimasTransacciones.TabIndex = 2;
             btnUltimasTransacciones.Text = "Ver Últimas Transacciones";
             btnUltimasTransacciones.UseVisualStyleBackColor = true;
+            btnUltimasTransacciones.Click += btnUltimasTransacciones_Click;
             // 
             // btnDeposito
             // 
@@ -98,6 +101,7 @@
             btnDeposito.TabIndex = 1;
             btnDeposito.Text = "Realizar Depósito";
             btnDeposito.UseVisualStyleBackColor = true;
+            btnDeposito.Click += btnDeposito_Click;
             // 
             // btnRetiro
             // 
@@ -107,6 +111,7 @@
             btnRetiro.TabIndex = 0;
             btnRetiro.Text = "Realizar Retiro";
             btnRetiro.UseVisualStyleBackColor = true;
+            btnRetiro.Click += btnRetiro_Click;
             // 
             // btnSalir
             // 
