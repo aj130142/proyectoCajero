@@ -93,9 +93,9 @@
             label5.AutoSize = true;
             label5.Location = new Point(56, 320);
             label5.Name = "label5";
-            label5.Size = new Size(80, 20);
+            label5.Size = new Size(111, 20);
             label5.TabIndex = 15;
-            label5.Text = "Max. saldo";
+            label5.Text = "Monto Maximo";
             // 
             // label4
             // 

@@ -72,9 +72,9 @@
             label3.AutoSize = true;
             label3.Location = new Point(137, 266);
             label3.Name = "label3";
-            label3.Size = new Size(154, 20);
+            label3.Size = new Size(158, 20);
             label3.TabIndex = 3;
-            label3.Text = "Nuevo No. Max. saldo";
+            label3.Text = "Nuevo Monto Maximo";
             // 
             // tarjetaNewTB
             // 
