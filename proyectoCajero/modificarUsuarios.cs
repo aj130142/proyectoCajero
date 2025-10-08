@@ -25,11 +25,13 @@ namespace proyectoCajero
 
             tarjetaNewTB.Enabled = false;
             maxSaldoTB.Enabled = false;
+            numericUpDown1.Enabled = false;
         }
 
 
         private void modTarjCheckB_CheckedChanged_1(object sender, EventArgs e)
         {
+
             if (modTarjCheckB.Checked)
             {
                 tarjetaNewTB.Enabled = true;
@@ -48,11 +50,13 @@ namespace proyectoCajero
             if (modMaxSaldoCheckB.Checked)
             {
                 maxSaldoTB.Enabled = true;
+                numericUpDown1.Enabled = true;
             }
             if (modMaxSaldoCheckB.Checked == !true)
             {
                 maxSaldoTB.Enabled = false;
                 modTarjCheckB.Checked = false;
+                numericUpDown1.Enabled = false;
 
             }
 
@@ -63,12 +67,15 @@ namespace proyectoCajero
         {
             string cargarUsuario = "usuario.txt";
             pathF = direccione.obtenerRutasTxt(cargarUsuario);
+
             // Ahora cargamos directamente una lista de objetos Usuario
             listaUsu = ManejadorArchivosUsuario.LeerUsuarios(pathF);
         }
 
         private void okeyBtn_Click(object sender, EventArgs e)
         {
+            
+
             string nombreBuscar = nameTB.Text;
 
             if (string.IsNullOrWhiteSpace(nombreBuscar))
@@ -120,12 +127,10 @@ namespace proyectoCajero
 
             if (modMaxSaldoCheckB.Checked)
             {
-                if (!decimal.TryParse(maxSaldoTB.Text, out decimal nuevoMaxSaldo))
-                {
-                    MessageBox.Show("El nuevo límite de saldo debe ser un valor numérico válido.");
-                    return;
-                }
-                usuarioAModificar.MontoMaximoDiario = nuevoMaxSaldo;
+                
+                
+                
+                usuarioAModificar.MontoMaximoDiario = numericUpDown1.Value;
                 cambiosRealizados = true;
             }
 

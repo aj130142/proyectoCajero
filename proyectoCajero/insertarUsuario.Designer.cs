@@ -40,6 +40,10 @@
             label2 = new Label();
             label1 = new Label();
             okeyBtn = new Button();
+            numericMonto = new NumericUpDown();
+            numericSaldo = new NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)numericMonto).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericSaldo).BeginInit();
             SuspendLayout();
             // 
             // label6
@@ -144,11 +148,28 @@
             okeyBtn.Click += okeyBtn_Click;
             okeyBtn.MouseClick += okeyBtn_MouseClick;
             // 
+            // numericMonto
+            // 
+            numericMonto.Location = new Point(471, 313);
+            numericMonto.Maximum = new decimal(new int[] { 14000, 0, 0, 0 });
+            numericMonto.Name = "numericMonto";
+            numericMonto.Size = new Size(279, 27);
+            numericMonto.TabIndex = 23;
+            // 
+            // numericSaldo
+            // 
+            numericSaldo.Location = new Point(471, 258);
+            numericSaldo.Name = "numericSaldo";
+            numericSaldo.Size = new Size(279, 27);
+            numericSaldo.TabIndex = 24;
+            // 
             // insertarUsuario
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(779, 450);
+            Controls.Add(numericSaldo);
+            Controls.Add(numericMonto);
             Controls.Add(okeyBtn);
             Controls.Add(label6);
             Controls.Add(maxsaldoTB);
@@ -164,6 +185,8 @@
             Name = "insertarUsuario";
             Text = "Nuevo usuario";
             Load += insertarUsuario_Load;
+            ((System.ComponentModel.ISupportInitialize)numericMonto).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericSaldo).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -182,5 +205,7 @@
         private Label label2;
         private Label label1;
         private Button okeyBtn;
+        private NumericUpDown numericMonto;
+        private NumericUpDown numericSaldo;
     }
 }

@@ -68,7 +68,7 @@ namespace proyectoCajero
                 return;
             }
 
-            if (!decimal.TryParse(saldoTB.Text, out decimal saldo) || !decimal.TryParse(maxsaldoTB.Text, out decimal maxSaldo))
+            if (numericMonto.Value !=0 && numericSaldo.Value!=0)
             {
                 MessageBox.Show("El saldo y el monto máximo deben ser valores numéricos válidos.");
                 return;
@@ -89,8 +89,8 @@ namespace proyectoCajero
                 Nombre = nameTB.Text,
                 NumeroTarjeta = tarjetaTB.Text,
                 PIN = pinTB.Text,
-                SaldoActual = saldo,
-                MontoMaximoDiario = maxSaldo
+                SaldoActual = numericSaldo.Value,
+                MontoMaximoDiario = numericMonto.Value
             };
 
             // --- PASO 4: Añadir el nuevo usuario a la lista y guardar ---
@@ -105,6 +105,8 @@ namespace proyectoCajero
             pinTB.Text = "";
             saldoTB.Text = "";
             maxsaldoTB.Text = "";
+            numericMonto.Value = 0;
+            numericSaldo.Value = 0;
         }
 
         private void okeyBtn_MouseClick(object sender, MouseEventArgs e)

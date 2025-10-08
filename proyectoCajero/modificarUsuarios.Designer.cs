@@ -40,6 +40,8 @@
             okeyBtn = new Button();
             label5 = new Label();
             allSelect = new CheckBox();
+            numericUpDown1 = new NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -85,7 +87,7 @@
             // 
             // maxSaldoTB
             // 
-            maxSaldoTB.Location = new Point(328, 259);
+            maxSaldoTB.Location = new Point(328, 366);
             maxSaldoTB.Name = "maxSaldoTB";
             maxSaldoTB.Size = new Size(276, 27);
             maxSaldoTB.TabIndex = 5;
@@ -148,11 +150,20 @@
             allSelect.UseVisualStyleBackColor = true;
             allSelect.CheckedChanged += allSelect_CheckedChanged;
             // 
+            // numericUpDown1
+            // 
+            numericUpDown1.Location = new Point(328, 266);
+            numericUpDown1.Maximum = new decimal(new int[] { 14000, 0, 0, 0 });
+            numericUpDown1.Name = "numericUpDown1";
+            numericUpDown1.Size = new Size(150, 27);
+            numericUpDown1.TabIndex = 12;
+            // 
             // modificarUsuarios
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(746, 450);
+            Controls.Add(numericUpDown1);
             Controls.Add(allSelect);
             Controls.Add(label5);
             Controls.Add(okeyBtn);
@@ -168,6 +179,7 @@
             Name = "modificarUsuarios";
             Text = "Modificar usuarios";
             Load += modificarUsuarios_Load;
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -186,5 +198,6 @@
         private Button okeyBtn;
         private Label label5;
         private CheckBox allSelect;
+        private NumericUpDown numericUpDown1;
     }
 }
