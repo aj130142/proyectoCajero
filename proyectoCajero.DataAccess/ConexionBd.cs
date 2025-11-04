@@ -4,6 +4,9 @@ using System.Configuration;
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using proyectoCajero.DataAccess.Models;
 
 namespace proyectoCajero
@@ -140,33 +143,42 @@ WHERE t.NumeroTarjeta = @num";
             await cmd.ExecuteNonQueryAsync();
         }
 
-        // New: query recent/top transactions for a given card
-        public async Task<List<proyectoCajero.DataAccess.Models.TransactionDto>> QueryRecentTransactionsAsync(string numeroTarjeta, int top = 10)
+        public async Task<List<(string Codigo, string Nombre)>> GetTiposTransaccionAsync()
         {
-            const string sql = @"SELECT TOP(@top) tr.FechaHora, tt.Nombre AS Tipo, t.NumeroTarjeta, tr.Monto
-FROM Transaccion tr
-INNER JOIN Tarjeta t ON tr.TarjetaID = t.TarjetaID
-INNER JOIN TipoTransaccion tt ON tr.TipoTransaccionID = tt.TipoTransaccionID
-WHERE t.NumeroTarjeta = @num
-ORDER BY tr.FechaHora DESC";
-
-            var parametros = new List<SqlParameter>
+            const string sql = "SELECT Codigo, Nombre FROM TipoTransaccion ORDER BY Nombre";
+            var list = new List<(string Codigo, string Nombre)>();
+            using var conn = await OpenConnectionAsync();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                new SqlParameter("@top", SqlDbType.Int) { Value = top },
-                new SqlParameter("@num", SqlDbType.NVarChar) { Value = numeroTarjeta }
-            };
-
-            return await QueryAsync(sql, reader => new proyectoCajero.DataAccess.Models.TransactionDto
-            {
-                FechaHora = reader.GetDateTime(reader.GetOrdinal("FechaHora")),
-                Tipo = reader.GetString(reader.GetOrdinal("Tipo")),
-                NumeroTarjeta = reader.GetString(reader.GetOrdinal("NumeroTarjeta")),
-                Monto = reader.GetDecimal(reader.GetOrdinal("Monto"))
-            }, parametros);
+                string codigo = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
+                string nombre = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
+                list.Add((codigo, nombre));
+            }
+            return list;
         }
 
-        // New: query transactions by date range and optional type
-        public async Task<List<proyectoCajero.DataAccess.Models.TransactionDto>> QueryTransactionsAsync(string numeroTarjeta, DateTime? desde, DateTime? hasta, string? tipo)
+        // Helper to remove diacritics for accent-insensitive comparisons
+        private static string RemoveDiacritics(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return text;
+            var normalized = text.Normalize(System.Text.NormalizationForm.FormD);
+            var sb = new System.Text.StringBuilder();
+            foreach (var ch in normalized)
+            {
+                var uc = CharUnicodeInfo.GetUnicodeCategory(ch);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(ch);
+                }
+            }
+            return sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
+        }
+
+        // Query transactions by date range and optional typeCode (type filtering done in SQL if code provided)
+        public async Task<List<TransactionDto>> QueryTransactionsAsync(string numeroTarjeta, DateTime? desde, DateTime? hasta, string? tipoCodigo)
         {
             var sql = new System.Text.StringBuilder();
             sql.AppendLine("SELECT tr.FechaHora, tt.Nombre AS Tipo, t.NumeroTarjeta, tr.Monto");
@@ -187,15 +199,42 @@ ORDER BY tr.FechaHora DESC";
                 parametros.Add(new SqlParameter("@hasta", SqlDbType.Date) { Value = hasta.Value.Date });
             }
 
-            if (!string.IsNullOrEmpty(tipo) && tipo != "Todos")
+            if (!string.IsNullOrEmpty(tipoCodigo) && tipoCodigo != "Todos")
             {
-                sql.AppendLine("AND tt.Nombre = @tipo");
-                parametros.Add(new SqlParameter("@tipo", SqlDbType.NVarChar) { Value = tipo });
+                sql.AppendLine("AND tt.Codigo = @codigo");
+                parametros.Add(new SqlParameter("@codigo", SqlDbType.NVarChar) { Value = tipoCodigo });
             }
 
             sql.AppendLine("ORDER BY tr.FechaHora DESC");
 
-            return await QueryAsync(sql.ToString(), reader => new proyectoCajero.DataAccess.Models.TransactionDto
+            var results = await QueryAsync(sql.ToString(), reader => new TransactionDto
+            {
+                FechaHora = reader.GetDateTime(reader.GetOrdinal("FechaHora")),
+                Tipo = reader.GetString(reader.GetOrdinal("Tipo")),
+                NumeroTarjeta = reader.GetString(reader.GetOrdinal("NumeroTarjeta")),
+                Monto = reader.GetDecimal(reader.GetOrdinal("Monto"))
+            }, parametros);
+
+            return results;
+        }
+
+        // Query recent/top transactions for a given card
+        public async Task<List<TransactionDto>> QueryRecentTransactionsAsync(string numeroTarjeta, int top = 10)
+        {
+            const string sql = @"SELECT TOP(@top) tr.FechaHora, tt.Nombre AS Tipo, t.NumeroTarjeta, tr.Monto
+FROM Transaccion tr
+INNER JOIN Tarjeta t ON tr.TarjetaID = t.TarjetaID
+INNER JOIN TipoTransaccion tt ON tr.TipoTransaccionID = tt.TipoTransaccionID
+WHERE t.NumeroTarjeta = @num
+ORDER BY tr.FechaHora DESC";
+
+            var parametros = new List<SqlParameter>
+            {
+                new SqlParameter("@top", SqlDbType.Int) { Value = top },
+                new SqlParameter("@num", SqlDbType.NVarChar) { Value = numeroTarjeta }
+            };
+
+            return await QueryAsync(sql, reader => new TransactionDto
             {
                 FechaHora = reader.GetDateTime(reader.GetOrdinal("FechaHora")),
                 Tipo = reader.GetString(reader.GetOrdinal("Tipo")),

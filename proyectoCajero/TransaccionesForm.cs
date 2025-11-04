@@ -24,11 +24,32 @@ namespace proyectoCajero
             dtpHasta.Value = DateTime.Today;
             txtTarjeta.Text = _numeroTarjetaSesion;
 
-            cmbTipo.Items.Clear();
-            cmbTipo.Items.Add("Todos");
-            cmbTipo.Items.Add("Retiro");
-            cmbTipo.Items.Add("Deposito");
-            cmbTipo.SelectedIndex = 0;
+            // Cargar tipos desde la base de datos para usar Codigo en el filtro
+            try
+            {
+                var conexion = new ConexionBd();
+                var tipos = await conexion.GetTiposTransaccionAsync(); // returns (Codigo, Nombre)
+                var list = new List<object>();
+                list.Add(new { Codigo = "Todos", Nombre = "Todos" });
+                foreach (var t in tipos)
+                {
+                    list.Add(new { Codigo = t.Codigo, Nombre = t.Nombre });
+                }
+
+                cmbTipo.DisplayMember = "Nombre";
+                cmbTipo.ValueMember = "Codigo";
+                cmbTipo.DataSource = list;
+                cmbTipo.SelectedValue = "Todos";
+            }
+            catch
+            {
+                // Fallback a etiquetas simples si falla la BD
+                cmbTipo.Items.Clear();
+                cmbTipo.Items.Add("Todos");
+                cmbTipo.Items.Add("Retiro");
+                cmbTipo.Items.Add("Deposito");
+                cmbTipo.SelectedIndex = 0;
+            }
 
             await LoadTop10Async();
         }
@@ -72,8 +93,18 @@ namespace proyectoCajero
             try
             {
                 var conexion = new ConexionBd();
-                string tipo = cmbTipo.SelectedItem?.ToString() ?? "Todos";
-                var lista = await conexion.QueryTransactionsAsync(txtTarjeta.Text.Trim(), desde, hasta, tipo);
+                // Obtener el codigo seleccionado (ValueMember) si el DataSource está configurado
+                string tipoCodigo = null;
+                try
+                {
+                    var val = cmbTipo.SelectedValue;
+                    if (val != null) tipoCodigo = val.ToString();
+                }
+                catch { tipoCodigo = null; }
+
+                if (string.IsNullOrEmpty(tipoCodigo) || tipoCodigo == "Todos") tipoCodigo = null;
+
+                var lista = await conexion.QueryTransactionsAsync(txtTarjeta.Text.Trim(), desde, hasta, tipoCodigo);
                 dgvTransacciones.DataSource = lista.Select(t => new {
                     Fecha = t.FechaHora,
                     Tipo = t.Tipo,
