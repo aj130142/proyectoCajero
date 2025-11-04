@@ -20,10 +20,24 @@ namespace proyectoCajero
             public string Nombre { get; set; }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
-            verificarCarpeta();
+            // Comprobación rápida de conexión a la base de datos al iniciar la aplicación.
+            try
+            {
+                var conexion = new ConexionBd();
+                using var conn = await conexion.OpenConnectionAsync();
+                // Si llegamos aquí, la conexión fue exitosa.
+                MessageBox.Show("Conexión a la base de datos exitosa.", "Conexión OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Cerrar la conexión (using se encarga de ello)
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al conectar con la base de datos: {ex.Message}", "Error de Conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Opcional: puedes deshabilitar la UI administrativa aquí si la conexión es crítica.
+            }
 
+            verificarCarpeta();
 
             var ruta = new archivosTxt.rutasJSOn();
             string ruta1 = ruta.ruta();
@@ -34,55 +48,66 @@ namespace proyectoCajero
 
         }
 
-        private void insertarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            insertarUsuario ventanaInser = new insertarUsuario();
-
-            ventanaInser.Show(); // abrimos la ventana insertarUsuario
-
-        }
-
-        private void buscarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controlUsuario ventanaControl = new controlUsuario();
-            ventanaControl.Show(); // abrimos la ventana controlUsuario
-        }
-
-        private void modificarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            modificarUsuarios modificarUser = new modificarUsuarios();
-
-            modificarUser.Show();// abrimos modificarUsuarios
-        }
-
-        private void loginToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void sesionBtn_Click(object sender, EventArgs e)
+        private async void sesionBtn_Click(object sender, EventArgs e)
         {
             string userLog = admName.Text; //obtiene el usuario
             string contraLog = contAdm.Text;//obtiene la contrasena
-            string nombreTxt = "adminUserTxt.txt";// declaramos la carpeta 
-            string rutatxt = direccione.obtenerRutasTxt(nombreTxt);// metodo para obtener la ruta de adminUserTxt.txt
-            listaLog = leerTxt.obtenerDatosTxt(rutatxt); //obtenemos la lista con todos los admins  
-            int nombreEncontrado = listaLog.FindIndex(x => x == userLog);//devuelve la primera coincidencia
-            string contraSearch = listaLog[nombreEncontrado + 1];//busca en la lista uno mas del index admin nombreEncontrado
 
-            if (nombreEncontrado >= 0 && contraSearch == contraLog)//verifica si existe, la contrasena es igual
+            try
             {
-                //muestra el resto del menu
+                var conexion = new ConexionBd();
+                string sql = "SELECT TOP(1) EmpleadoID, NombreUsuario, HashContraseña, Activo FROM Empleado WHERE NombreUsuario = @user";
+                var parametros = new List<Microsoft.Data.SqlClient.SqlParameter>
+                {
+                    new Microsoft.Data.SqlClient.SqlParameter("@user", System.Data.SqlDbType.NVarChar) { Value = userLog }
+                };
+
+                var lista = await conexion.QueryAsync(sql, reader =>
+                {
+                    var emp = new Empleado();
+                    emp.EmpleadoID = reader.GetInt32(reader.GetOrdinal("EmpleadoID"));
+                    emp.NombreUsuario = reader.GetString(reader.GetOrdinal("NombreUsuario"));
+                    emp.HashContraseña = reader.GetString(reader.GetOrdinal("HashContraseña"));
+                    emp.Activo = reader.GetBoolean(reader.GetOrdinal("Activo"));
+                    return emp;
+                }, parametros);
+
+                if (lista.Count == 0)
+                {
+                    MessageBox.Show("Usuario no encontrado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var empleado = lista[0];
+                if (!empleado.Activo)
+                {
+                    MessageBox.Show("Empleado inactivo.", "Acceso denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Verificar hash
+                bool valido = HashHelper.VerifySha256Hash(contraLog, empleado.HashContraseña);
+                if (!valido)
+                {
+                    MessageBox.Show("Contraseña incorrecta.", "Error de autenticación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Acceso concedido: establecer empleado en AppState y mostrar menus administrativos
+                AppState.CurrentEmpleadoId = empleado.EmpleadoID;
                 administarToolStripMenuItem.Visible = true;
-                //al validar los campos la interfaz se limpia con todo lo que tenga que ver con inicio de sesion
                 admName.Visible = false;
                 contAdm.Visible = false;
                 label1.Visible = false;
                 label2.Visible = false;
                 sesionBtn.Visible = false;
                 newAdmBtn.Visible = false;
-            }
 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al intentar iniciar sesión: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void newAdmBtn_Click(object sender, EventArgs e)
@@ -94,6 +119,24 @@ namespace proyectoCajero
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void insertarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            insertarUsuario ventanaInser = new insertarUsuario();
+            ventanaInser.Show(); // abrimos la ventana insertarUsuario
+        }
+
+        private void buscarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controlUsuario ventanaControl = new controlUsuario();
+            ventanaControl.Show(); // abrimos la ventana controlUsuario
+        }
+
+        private void modificarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            modificarUsuarios modificarUser = new modificarUsuarios();
+            modificarUser.Show();// abrimos modificarUsuarios
         }
 
         private void activarCajerosToolStripMenuItem_Click(object sender, EventArgs e)
@@ -123,6 +166,14 @@ namespace proyectoCajero
 
             // Una vez que la ventana de login se cierra (ya sea por éxito o cancelación),
             // volvemos a mostrar la ventana principal de administración.
+            this.Show();
+        }
+
+        private void gestionarEmpleadosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var ventanaEmpleado = new CapaPresentacion.GestionarEmpleado();
+            this.Hide();
+            ventanaEmpleado.ShowDialog();
             this.Show();
         }
     }

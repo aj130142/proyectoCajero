@@ -42,6 +42,7 @@
             label1 = new Label();
             newAdmBtn = new Button();
             btnModoUsuario = new Button();
+            gestionarEmpleadosToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -57,7 +58,7 @@
             // 
             // administarToolStripMenuItem
             // 
-            administarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { insertarUsuariosToolStripMenuItem, buscarUsuariosToolStripMenuItem, modificarUsuariosToolStripMenuItem, activarCajerosToolStripMenuItem, agregarEfectivoToolStripMenuItem });
+            administarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { insertarUsuariosToolStripMenuItem, buscarUsuariosToolStripMenuItem, modificarUsuariosToolStripMenuItem, activarCajerosToolStripMenuItem, agregarEfectivoToolStripMenuItem, gestionarEmpleadosToolStripMenuItem });
             administarToolStripMenuItem.Name = "administarToolStripMenuItem";
             administarToolStripMenuItem.Size = new Size(95, 24);
             administarToolStripMenuItem.Text = "Administar";
@@ -65,35 +66,35 @@
             // insertarUsuariosToolStripMenuItem
             // 
             insertarUsuariosToolStripMenuItem.Name = "insertarUsuariosToolStripMenuItem";
-            insertarUsuariosToolStripMenuItem.Size = new Size(224, 26);
+            insertarUsuariosToolStripMenuItem.Size = new Size(233, 26);
             insertarUsuariosToolStripMenuItem.Text = "Insertar usuarios";
             insertarUsuariosToolStripMenuItem.Click += insertarUsuariosToolStripMenuItem_Click;
             // 
             // buscarUsuariosToolStripMenuItem
             // 
             buscarUsuariosToolStripMenuItem.Name = "buscarUsuariosToolStripMenuItem";
-            buscarUsuariosToolStripMenuItem.Size = new Size(224, 26);
+            buscarUsuariosToolStripMenuItem.Size = new Size(233, 26);
             buscarUsuariosToolStripMenuItem.Text = "Buscar usuarios";
             buscarUsuariosToolStripMenuItem.Click += buscarUsuariosToolStripMenuItem_Click;
             // 
             // modificarUsuariosToolStripMenuItem
             // 
             modificarUsuariosToolStripMenuItem.Name = "modificarUsuariosToolStripMenuItem";
-            modificarUsuariosToolStripMenuItem.Size = new Size(224, 26);
+            modificarUsuariosToolStripMenuItem.Size = new Size(233, 26);
             modificarUsuariosToolStripMenuItem.Text = "Modificar Usuarios";
             modificarUsuariosToolStripMenuItem.Click += modificarUsuariosToolStripMenuItem_Click;
             // 
             // activarCajerosToolStripMenuItem
             // 
             activarCajerosToolStripMenuItem.Name = "activarCajerosToolStripMenuItem";
-            activarCajerosToolStripMenuItem.Size = new Size(224, 26);
+            activarCajerosToolStripMenuItem.Size = new Size(233, 26);
             activarCajerosToolStripMenuItem.Text = "Activar cajeros";
             activarCajerosToolStripMenuItem.Click += activarCajerosToolStripMenuItem_Click;
             // 
             // agregarEfectivoToolStripMenuItem
             // 
             agregarEfectivoToolStripMenuItem.Name = "agregarEfectivoToolStripMenuItem";
-            agregarEfectivoToolStripMenuItem.Size = new Size(224, 26);
+            agregarEfectivoToolStripMenuItem.Size = new Size(233, 26);
             agregarEfectivoToolStripMenuItem.Text = "Agregar Efectivo";
             agregarEfectivoToolStripMenuItem.Click += agregarEfectivoToolStripMenuItem_Click;
             // 
@@ -159,6 +160,13 @@
             btnModoUsuario.UseVisualStyleBackColor = true;
             btnModoUsuario.Click += btnModoUsuario_Click;
             // 
+            // gestionarEmpleadosToolStripMenuItem
+            // 
+            gestionarEmpleadosToolStripMenuItem.Name = "gestionarEmpleadosToolStripMenuItem";
+            gestionarEmpleadosToolStripMenuItem.Size = new Size(233, 26);
+            gestionarEmpleadosToolStripMenuItem.Text = "Gestionar Empleados";
+            gestionarEmpleadosToolStripMenuItem.Click += gestionarEmpleadosToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -200,5 +208,6 @@
         private ToolStripMenuItem activarCajerosToolStripMenuItem;
         private ToolStripMenuItem agregarEfectivoToolStripMenuItem;
         private Button btnModoUsuario;
+        private ToolStripMenuItem gestionarEmpleadosToolStripMenuItem;
     }
 }

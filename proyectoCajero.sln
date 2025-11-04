@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		archivo.json = archivo.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "proyectoCajero.DataAccess", "proyectoCajero.DataAccess\proyectoCajero.DataAccess.csproj", "{14F7615A-B5D1-D932-B388-8446D56242E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{2B32FFBF-6570-884C-4E21-FA1669E1866D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B32FFBF-6570-884C-4E21-FA1669E1866D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B32FFBF-6570-884C-4E21-FA1669E1866D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14F7615A-B5D1-D932-B388-8446D56242E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14F7615A-B5D1-D932-B388-8446D56242E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14F7615A-B5D1-D932-B388-8446D56242E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14F7615A-B5D1-D932-B388-8446D56242E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
