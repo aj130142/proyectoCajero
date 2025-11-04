@@ -121,41 +121,9 @@ WHERE t.NumeroTarjeta = @num AND tt.Nombre = 'Retiro' AND CAST(tr.FechaHora AS D
 
         private void btnUltimasTransacciones_Click(object sender, EventArgs e)
         {
-            // 1. Leer todas las transacciones del archivo
-            string pathTransacciones = direccione.obtenerRutasTxt("transacciones.txt");
-            List<Transaccion> todasLasTransacciones = ManejadorArchivosTransaccion.LeerTransacciones(pathTransacciones);
-
-            // 2. Filtrar, Ordenar y Seleccionar las transacciones del usuario
-            var ultimasTransacciones = todasLasTransacciones
-                .Where(t => t.NumeroTarjeta == _usuarioActual.NumeroTarjeta) // Filtrar por el usuario actual
-                .OrderByDescending(t => t.FechaHora)                         // Ordenar de la más reciente a la más antigua
-                .Take(5)                                                     // Tomar solo las primeras 5
-                .ToList();                                                   // Convertir el resultado a una lista
-
-            // 3. Construir el mensaje para mostrar
-            string mensaje;
-            if (ultimasTransacciones.Any()) // Verificamos si se encontró alguna transacción
-            {
-                // Usamos StringBuilder para construir eficientemente el string
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine("Sus últimas 5 transacciones:");
-                sb.AppendLine("------------------------------------");
-
-                foreach (var transaccion in ultimasTransacciones)
-                {
-                    // Damos formato a cada línea para que sea clara
-                    sb.AppendLine($"{transaccion.FechaHora:g} - {transaccion.Tipo} - {transaccion.Monto:C}");
-                }
-
-                mensaje = sb.ToString();
-            }
-            else
-            {
-                mensaje = "No se encontraron transacciones en su historial.";
-            }
-
-            // 4. Mostrar el mensaje
-            MessageBox.Show(mensaje, "Últimas Transacciones", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Abrir formulario de transacciones pasando la tarjeta de la sesión
+            var f = new TransaccionesForm(_usuarioActual.NumeroTarjeta);
+            f.ShowDialog();
         }
 
         private void btnCambiarPin_Click(object sender, EventArgs e)

@@ -17,4 +17,8 @@
     <ProjectReference Include="..\proyectoCajero.DataAccess\proyectoCajero.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="proyectoCajero.DataAccess\Models\" />
+  </ItemGroup>
+
 </Project>

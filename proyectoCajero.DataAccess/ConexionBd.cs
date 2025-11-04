@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using proyectoCajero.DataAccess.Models;
 
 namespace proyectoCajero
 {
@@ -137,6 +138,70 @@ WHERE t.NumeroTarjeta = @num";
             cmd.Parameters.Add(new SqlParameter("@value", SqlDbType.Int) { Value = empleadoId });
             if (tx != null) cmd.Transaction = tx;
             await cmd.ExecuteNonQueryAsync();
+        }
+
+        // New: query recent/top transactions for a given card
+        public async Task<List<proyectoCajero.DataAccess.Models.TransactionDto>> QueryRecentTransactionsAsync(string numeroTarjeta, int top = 10)
+        {
+            const string sql = @"SELECT TOP(@top) tr.FechaHora, tt.Nombre AS Tipo, t.NumeroTarjeta, tr.Monto
+FROM Transaccion tr
+INNER JOIN Tarjeta t ON tr.TarjetaID = t.TarjetaID
+INNER JOIN TipoTransaccion tt ON tr.TipoTransaccionID = tt.TipoTransaccionID
+WHERE t.NumeroTarjeta = @num
+ORDER BY tr.FechaHora DESC";
+
+            var parametros = new List<SqlParameter>
+            {
+                new SqlParameter("@top", SqlDbType.Int) { Value = top },
+                new SqlParameter("@num", SqlDbType.NVarChar) { Value = numeroTarjeta }
+            };
+
+            return await QueryAsync(sql, reader => new proyectoCajero.DataAccess.Models.TransactionDto
+            {
+                FechaHora = reader.GetDateTime(reader.GetOrdinal("FechaHora")),
+                Tipo = reader.GetString(reader.GetOrdinal("Tipo")),
+                NumeroTarjeta = reader.GetString(reader.GetOrdinal("NumeroTarjeta")),
+                Monto = reader.GetDecimal(reader.GetOrdinal("Monto"))
+            }, parametros);
+        }
+
+        // New: query transactions by date range and optional type
+        public async Task<List<proyectoCajero.DataAccess.Models.TransactionDto>> QueryTransactionsAsync(string numeroTarjeta, DateTime? desde, DateTime? hasta, string? tipo)
+        {
+            var sql = new System.Text.StringBuilder();
+            sql.AppendLine("SELECT tr.FechaHora, tt.Nombre AS Tipo, t.NumeroTarjeta, tr.Monto");
+            sql.AppendLine("FROM Transaccion tr");
+            sql.AppendLine("INNER JOIN Tarjeta t ON tr.TarjetaID = t.TarjetaID");
+            sql.AppendLine("INNER JOIN TipoTransaccion tt ON tr.TipoTransaccionID = tt.TipoTransaccionID");
+            sql.AppendLine("WHERE t.NumeroTarjeta = @num");
+
+            var parametros = new List<SqlParameter>
+            {
+                new SqlParameter("@num", SqlDbType.NVarChar) { Value = numeroTarjeta }
+            };
+
+            if (desde.HasValue && hasta.HasValue)
+            {
+                sql.AppendLine("AND CAST(tr.FechaHora AS DATE) BETWEEN @desde AND @hasta");
+                parametros.Add(new SqlParameter("@desde", SqlDbType.Date) { Value = desde.Value.Date });
+                parametros.Add(new SqlParameter("@hasta", SqlDbType.Date) { Value = hasta.Value.Date });
+            }
+
+            if (!string.IsNullOrEmpty(tipo) && tipo != "Todos")
+            {
+                sql.AppendLine("AND tt.Nombre = @tipo");
+                parametros.Add(new SqlParameter("@tipo", SqlDbType.NVarChar) { Value = tipo });
+            }
+
+            sql.AppendLine("ORDER BY tr.FechaHora DESC");
+
+            return await QueryAsync(sql.ToString(), reader => new proyectoCajero.DataAccess.Models.TransactionDto
+            {
+                FechaHora = reader.GetDateTime(reader.GetOrdinal("FechaHora")),
+                Tipo = reader.GetString(reader.GetOrdinal("Tipo")),
+                NumeroTarjeta = reader.GetString(reader.GetOrdinal("NumeroTarjeta")),
+                Monto = reader.GetDecimal(reader.GetOrdinal("Monto"))
+            }, parametros);
         }
     }
 }
