@@ -101,6 +101,54 @@ namespace proyectoCajero
             {
                 var conexion = new ConexionBd();
                 using var conn = await conexion.OpenConnectionAsync();
+
+                // --- NUEVO: verificar que el cajero esté inicializado ---
+                int? cajeroId = await ResolveCajeroIdAsync(conn, null);
+                if (!cajeroId.HasValue)
+                {
+                    MessageBox.Show("El cajero no ha sido inicializado. Contacte a un administrador.", "Cajero no inicializado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                using (var cmdCaj = conn.CreateCommand())
+                {
+                    // Obtener EstadoCajeroID y calcular total desde InventarioEfectivo
+                    cmdCaj.CommandText = @"
+SELECT
+    c.EstadoCajeroID,
+    ISNULL((SELECT SUM(i.Cantidad * d.Valor)
+            FROM InventarioEfectivo i
+            JOIN Denominacion d ON i.DenominacionID = d.DenominacionID
+            WHERE i.CajeroID = c.CajeroID), 0) AS TotalEfectivo
+FROM Cajero c
+WHERE c.CajeroID = @id";
+                    cmdCaj.Parameters.Add(new SqlParameter("@id", SqlDbType.Int) { Value = cajeroId.Value });
+                    using var readerCaj = await cmdCaj.ExecuteReaderAsync();
+                    int estadoCajero = 0;
+                    if (await readerCaj.ReadAsync())
+                    {
+                        // EstadoCajeroID is TINYINT (byte) in DB, so read as byte
+                        estadoCajero = readerCaj.IsDBNull(readerCaj.GetOrdinal("EstadoCajeroID")) ? 0 : readerCaj.GetByte(readerCaj.GetOrdinal("EstadoCajeroID"));
+                        // decimal totalEfectivo = readerCaj.IsDBNull(readerCaj.GetOrdinal("TotalEfectivo")) ? 0m : readerCaj.GetDecimal(readerCaj.GetOrdinal("TotalEfectivo"));
+                    }
+                    else
+                    {
+                        MessageBox.Show("El cajero no ha sido inicializado. Contacte a un administrador.", "Cajero no inicializado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Consideramos 'inicializado' cuando el estado es 'En Servicio' (1) o 'Bajo en Efectivo' (4)
+                    bool inicializado = (estadoCajero == 1 || estadoCajero == 4);
+
+                    if (!inicializado)
+                    {
+                        // Intentamos insertar log de intento fallido (no obligatorio)
+                        _ = InsertLogInicioSesionAsync(conn, null, numeroTarjeta, false, null, null);
+                        MessageBox.Show("El cajero no ha sido inicializado. Contacte a un administrador.", "Cajero no inicializado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+
                 using var cmd = conn.CreateCommand();
                 cmd.CommandText = @"
                     SELECT TOP(1)

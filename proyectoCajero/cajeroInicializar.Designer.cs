@@ -10,7 +10,7 @@
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -44,6 +44,14 @@
             num5 = new NumericUpDown();
             num1 = new NumericUpDown();
             btnGuardar = new Button();
+            cajeroUbicacionTB = new TextBox();
+            label1 = new Label();
+            label9 = new Label();
+            empleadoTB = new TextBox();
+            label10 = new Label();
+            justificacionRTB = new RichTextBox();
+            label11 = new Label();
+            cajeroIDTB = new TextBox();
             ((System.ComponentModel.ISupportInitialize)num200).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num100).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num50).BeginInit();
@@ -57,7 +65,7 @@
             // 
             lblTotal.AutoSize = true;
             lblTotal.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblTotal.Location = new Point(466, 102);
+            lblTotal.Location = new Point(841, 100);
             lblTotal.Name = "lblTotal";
             lblTotal.Size = new Size(124, 28);
             lblTotal.TabIndex = 2;
@@ -66,7 +74,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(144, 104);
+            label2.Location = new Point(575, 108);
             label2.Name = "label2";
             label2.Size = new Size(51, 20);
             label2.TabIndex = 3;
@@ -75,7 +83,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(144, 142);
+            label3.Location = new Point(575, 141);
             label3.Name = "label3";
             label3.Size = new Size(51, 20);
             label3.TabIndex = 4;
@@ -84,7 +92,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(144, 170);
+            label4.Location = new Point(575, 174);
             label4.Name = "label4";
             label4.Size = new Size(43, 20);
             label4.TabIndex = 5;
@@ -93,7 +101,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(144, 203);
+            label5.Location = new Point(575, 207);
             label5.Name = "label5";
             label5.Size = new Size(43, 20);
             label5.TabIndex = 6;
@@ -102,7 +110,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(144, 236);
+            label6.Location = new Point(575, 240);
             label6.Name = "label6";
             label6.Size = new Size(43, 20);
             label6.TabIndex = 7;
@@ -111,7 +119,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(144, 269);
+            label7.Location = new Point(575, 273);
             label7.Name = "label7";
             label7.Size = new Size(35, 20);
             label7.TabIndex = 8;
@@ -120,7 +128,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(144, 302);
+            label8.Location = new Point(575, 306);
             label8.Name = "label8";
             label8.Size = new Size(35, 20);
             label8.TabIndex = 9;
@@ -128,7 +136,7 @@
             // 
             // num200
             // 
-            num200.Location = new Point(234, 102);
+            num200.Location = new Point(665, 106);
             num200.Name = "num200";
             num200.Size = new Size(128, 27);
             num200.TabIndex = 10;
@@ -136,7 +144,7 @@
             // 
             // num100
             // 
-            num100.Location = new Point(234, 135);
+            num100.Location = new Point(665, 139);
             num100.Name = "num100";
             num100.Size = new Size(128, 27);
             num100.TabIndex = 11;
@@ -144,7 +152,7 @@
             // 
             // num50
             // 
-            num50.Location = new Point(234, 168);
+            num50.Location = new Point(665, 172);
             num50.Name = "num50";
             num50.Size = new Size(128, 27);
             num50.TabIndex = 12;
@@ -152,7 +160,7 @@
             // 
             // num20
             // 
-            num20.Location = new Point(234, 201);
+            num20.Location = new Point(665, 205);
             num20.Name = "num20";
             num20.Size = new Size(128, 27);
             num20.TabIndex = 13;
@@ -160,7 +168,7 @@
             // 
             // num10
             // 
-            num10.Location = new Point(234, 234);
+            num10.Location = new Point(665, 238);
             num10.Name = "num10";
             num10.Size = new Size(128, 27);
             num10.TabIndex = 14;
@@ -168,7 +176,7 @@
             // 
             // num5
             // 
-            num5.Location = new Point(234, 267);
+            num5.Location = new Point(665, 271);
             num5.Name = "num5";
             num5.Size = new Size(128, 27);
             num5.TabIndex = 15;
@@ -176,7 +184,7 @@
             // 
             // num1
             // 
-            num1.Location = new Point(234, 300);
+            num1.Location = new Point(665, 304);
             num1.Name = "num1";
             num1.Size = new Size(128, 27);
             num1.TabIndex = 16;
@@ -184,7 +192,7 @@
             // 
             // btnGuardar
             // 
-            btnGuardar.Location = new Point(234, 366);
+            btnGuardar.Location = new Point(665, 370);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(128, 72);
             btnGuardar.TabIndex = 17;
@@ -192,11 +200,86 @@
             btnGuardar.UseVisualStyleBackColor = true;
             btnGuardar.Click += btnGuardar_Click;
             // 
+            // cajeroUbicacionTB
+            // 
+            cajeroUbicacionTB.Location = new Point(165, 159);
+            cajeroUbicacionTB.Name = "cajeroUbicacionTB";
+            cajeroUbicacionTB.Size = new Size(210, 27);
+            cajeroUbicacionTB.TabIndex = 18;
+            cajeroUbicacionTB.ReadOnly = true;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(41, 162);
+            label1.Name = "label1";
+            label1.Size = new Size(55, 20);
+            label1.TabIndex = 19;
+            label1.Text = "Cajero:";
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(41, 228);
+            label9.Name = "label9";
+            label9.Size = new Size(80, 20);
+            label9.TabIndex = 20;
+            label9.Text = "Empleado:";
+            // 
+            // empleadoTB
+            // 
+            empleadoTB.Location = new Point(165, 233);
+            empleadoTB.Name = "empleadoTB";
+            empleadoTB.ReadOnly = true;
+            empleadoTB.Size = new Size(210, 27);
+            empleadoTB.TabIndex = 21;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(41, 294);
+            label10.Name = "label10";
+            label10.Size = new Size(92, 20);
+            label10.TabIndex = 22;
+            label10.Text = "Justificacion:";
+            // 
+            // justificacionRTB
+            // 
+            justificacionRTB.Location = new Point(165, 294);
+            justificacionRTB.Name = "justificacionRTB";
+            justificacionRTB.Size = new Size(210, 147);
+            justificacionRTB.TabIndex = 23;
+            justificacionRTB.Text = "";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(41, 106);
+            label11.Name = "label11";
+            label11.Size = new Size(74, 20);
+            label11.TabIndex = 24;
+            label11.Text = "ID Cajero:";
+            // 
+            // cajeroIDTB
+            // 
+            cajeroIDTB.Location = new Point(165, 103);
+            cajeroIDTB.Name = "cajeroIDTB";
+            cajeroIDTB.Size = new Size(210, 27);
+            cajeroIDTB.TabIndex = 25;
+            // 
             // cajeroInicializar
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1062, 673);
+            Controls.Add(cajeroIDTB);
+            Controls.Add(label11);
+            Controls.Add(justificacionRTB);
+            Controls.Add(label10);
+            Controls.Add(empleadoTB);
+            Controls.Add(label9);
+            Controls.Add(label1);
+            Controls.Add(cajeroUbicacionTB);
             Controls.Add(btnGuardar);
             Controls.Add(num1);
             Controls.Add(num5);
@@ -243,5 +326,13 @@
         private NumericUpDown num5;
         private NumericUpDown num1;
         private Button btnGuardar;
+        private TextBox cajeroUbicacionTB;
+        private Label label1;
+        private Label label9;
+        private TextBox empleadoTB;
+        private Label label10;
+        private RichTextBox justificacionRTB;
+        private Label label11;
+        private TextBox cajeroIDTB;
     }
 }
