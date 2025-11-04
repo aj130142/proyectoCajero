@@ -8,10 +8,11 @@ namespace proyectoCajero
         Retiro
     }
 
-    public enum TipoTransaccion
+    public enum TipoTransaccion : byte
     {
-        Retiro,
-        Deposito
+        Retiro = 1,
+        Deposito = 2,
+        Consulta = 3
     }
 
     public class Transaccion

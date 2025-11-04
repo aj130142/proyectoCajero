@@ -129,7 +129,7 @@ namespace proyectoCajero
                     {
                         using var cmdFind = conn.CreateCommand();
                         cmdFind.Transaction = tx;
-                        cmdFind.CommandText = "SELECT TOP(1) CajeroID FROM Cajero WHERE Activo = 1";
+                        cmdFind.CommandText = "SELECT TOP(1) CajeroID FROM Cajero WHERE EstadoCajeroID = 1";
                         var res = await cmdFind.ExecuteScalarAsync();
                         if (res != null && res != DBNull.Value) cajeroId = Convert.ToInt32(res);
                     }
@@ -152,7 +152,7 @@ namespace proyectoCajero
                     decimal capacidad = 40000m; // default fallback if DB doesn't store capacity
                     if (await readerCaj.ReadAsync())
                     {
-                        int estadoCajero = !readerCaj.IsDBNull(readerCaj.GetOrdinal("EstadoCajeroID")) ? readerCaj.GetInt32(readerCaj.GetOrdinal("EstadoCajeroID")) : 0;
+                        byte estadoCajero = !readerCaj.IsDBNull(readerCaj.GetOrdinal("EstadoCajeroID")) ? readerCaj.GetByte(readerCaj.GetOrdinal("EstadoCajeroID")) : (byte)0;
                         // Consideramos 'inicializado' cuando el estado es 'En Servicio' (1) o 'Bajo en Efectivo' (4)
                         inicializado = (estadoCajero == 1 || estadoCajero == 4);
                     }
@@ -235,11 +235,11 @@ namespace proyectoCajero
                         using var cmdUp = conn.CreateCommand();
                         cmdUp.Transaction = tx;
                         cmdUp.CommandText = @"
-IF EXISTS (SELECT 1 FROM InventarioEfectivo WHERE CajeroID = @cajero AND DenominacionID = @den)
-    UPDATE InventarioEfectivo SET Cantidad = Cantidad + @cant WHERE CajeroID = @cajero AND DenominacionID = @den;
-ELSE
-    INSERT INTO InventarioEfectivo (CajeroID, DenominacionID, Cantidad) VALUES (@cajero, @den, @cant);
-";
+                            IF EXISTS (SELECT 1 FROM InventarioEfectivo WHERE CajeroID = @cajero AND DenominacionID = @den)
+                                UPDATE InventarioEfectivo SET Cantidad = Cantidad + @cant WHERE CajeroID = @cajero AND DenominacionID = @den;
+                            ELSE
+                                INSERT INTO InventarioEfectivo (CajeroID, DenominacionID, Cantidad) VALUES (@cajero, @den, @cant);
+                            ";
                         cmdUp.Parameters.Add(new SqlParameter("@cajero", SqlDbType.Int) { Value = cajeroId.Value });
                         cmdUp.Parameters.Add(new SqlParameter("@den", SqlDbType.Int) { Value = denomId });
                         cmdUp.Parameters.Add(new SqlParameter("@cant", SqlDbType.Int) { Value = cantidad });
@@ -282,6 +282,7 @@ ELSE
                     // Actualizar saldo de la cuenta del usuario
                     // Obtener CuentaID desde Tarjeta
                     int cuentaId;
+                    int tarjetaId;
                     using (var cmdCuenta = conn.CreateCommand())
                     {
                         cmdCuenta.Transaction = tx;
@@ -295,6 +296,19 @@ ELSE
                             return;
                         }
                         cuentaId = Convert.ToInt32(obj);
+                        // Obtener TarjetaID también
+                        using var cmdTarj = conn.CreateCommand();
+                        cmdTarj.Transaction = tx;
+                        cmdTarj.CommandText = @"SELECT TOP(1) TarjetaID FROM Tarjeta WHERE NumeroTarjeta = @num";
+                        cmdTarj.Parameters.Add(new SqlParameter("@num", SqlDbType.NVarChar) { Value = _usuario.NumeroTarjeta });
+                        var objTarj = await cmdTarj.ExecuteScalarAsync();
+                        if (objTarj == null || objTarj == DBNull.Value)
+                        {
+                            tx.Rollback();
+                            MessageBox.Show("Tarjeta no encontrada.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }  
+                        tarjetaId = Convert.ToInt32(objTarj);
                     }
 
                     using (var cmdUpdSaldo = conn.CreateCommand())
@@ -310,10 +324,11 @@ ELSE
                     using (var cmdTrans = conn.CreateCommand())
                     {
                         cmdTrans.Transaction = tx;
-                        cmdTrans.CommandText = @"INSERT INTO Transaccion (CuentaID, FechaHora, TipoTransaccionID, Monto, CajeroID, NumeroTarjeta) VALUES (@cuenta, @fecha, @tipo, @monto, @cajero, @num)";
+                        cmdTrans.CommandText = @"INSERT INTO Transaccion (CuentaID, TarjetaID, FechaHora, TipoTransaccionID, Monto) VALUES (@cuenta, @tarjeta, @fecha, @tipo, @monto)";
                         cmdTrans.Parameters.Add(new SqlParameter("@cuenta", SqlDbType.Int) { Value = cuentaId });
+                        cmdTrans.Parameters.Add(new SqlParameter("@tarjeta", SqlDbType.Int) { Value = tarjetaId });
                         cmdTrans.Parameters.Add(new SqlParameter("@fecha", SqlDbType.DateTime2) { Value = DateTime.Now });
-                        cmdTrans.Parameters.Add(new SqlParameter("@tipo", SqlDbType.TinyInt) { Value = (int)TipoTransaccion.Deposito });
+                        cmdTrans.Parameters.Add(new SqlParameter("@tipo", SqlDbType.TinyInt) { Value = (byte)TipoTransaccion.Deposito });
                         cmdTrans.Parameters.Add(new SqlParameter("@monto", SqlDbType.Decimal) { Value = montoTotal });
                         cmdTrans.Parameters.Add(new SqlParameter("@cajero", SqlDbType.Int) { Value = cajeroId.Value });
                         cmdTrans.Parameters.Add(new SqlParameter("@num", SqlDbType.NVarChar) { Value = _usuario.NumeroTarjeta });
@@ -353,7 +368,7 @@ ELSE
                     {
                         using var cmdFind = conn.CreateCommand();
                         cmdFind.Transaction = tx;
-                        cmdFind.CommandText = "SELECT TOP(1) CajeroID FROM Cajero WHERE Activo = 1";
+                        cmdFind.CommandText = "SELECT TOP(1) CajeroID FROM Cajero WHERE EstadoCajeroID = 1";
                         var res = await cmdFind.ExecuteScalarAsync();
                         if (res != null && res != DBNull.Value) cajeroId = Convert.ToInt32(res);
                     }
@@ -449,6 +464,7 @@ ELSE
 
                     // Actualizar saldo de cuenta
                     int cuentaId;
+                    int tarjetaId;
                     using (var cmdCuenta = conn.CreateCommand())
                     {
                         cmdCuenta.Transaction = tx;
@@ -462,6 +478,19 @@ ELSE
                             return;
                         }
                         cuentaId = Convert.ToInt32(obj);
+                        // Obtener TarjetaID también
+                        using var cmdTarj = conn.CreateCommand();
+                        cmdTarj.Transaction = tx;
+                        cmdTarj.CommandText = @"SELECT TOP(1) TarjetaID FROM Tarjeta WHERE NumeroTarjeta = @num";
+                        cmdTarj.Parameters.Add(new SqlParameter("@num", SqlDbType.NVarChar) { Value = _usuario.NumeroTarjeta });
+                        var objTarj = await cmdTarj.ExecuteScalarAsync();
+                        if (objTarj == null || objTarj == DBNull.Value)
+                        {
+                            tx.Rollback();
+                            MessageBox.Show("Tarjeta no encontrada.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        tarjetaId = Convert.ToInt32(objTarj);
                     }
 
                     using (var cmdUpdSaldo = conn.CreateCommand())
@@ -477,10 +506,11 @@ ELSE
                     using (var cmdTrans = conn.CreateCommand())
                     {
                         cmdTrans.Transaction = tx;
-                        cmdTrans.CommandText = @"INSERT INTO Transaccion (CuentaID, FechaHora, TipoTransaccionID, Monto, CajeroID, NumeroTarjeta) VALUES (@cuenta, @fecha, @tipo, @monto, @cajero, @num)";
+                        cmdTrans.CommandText = @"INSERT INTO Transaccion (CuentaID, TarjetaID, FechaHora, TipoTransaccionID, Monto) VALUES (@cuenta, @tarjeta, @fecha, @tipo, @monto)";
                         cmdTrans.Parameters.Add(new SqlParameter("@cuenta", SqlDbType.Int) { Value = cuentaId });
+                        cmdTrans.Parameters.Add(new SqlParameter("@tarjeta", SqlDbType.Int) { Value = tarjetaId });
                         cmdTrans.Parameters.Add(new SqlParameter("@fecha", SqlDbType.DateTime2) { Value = DateTime.Now });
-                        cmdTrans.Parameters.Add(new SqlParameter("@tipo", SqlDbType.TinyInt) { Value = (int)TipoTransaccion.Retiro });
+                        cmdTrans.Parameters.Add(new SqlParameter("@tipo", SqlDbType.TinyInt) { Value = (byte)TipoTransaccion.Retiro });
                         cmdTrans.Parameters.Add(new SqlParameter("@monto", SqlDbType.Decimal) { Value = montoTotal });
                         cmdTrans.Parameters.Add(new SqlParameter("@cajero", SqlDbType.Int) { Value = cajeroId.Value });
                         cmdTrans.Parameters.Add(new SqlParameter("@num", SqlDbType.NVarChar) { Value = _usuario.NumeroTarjeta });
