@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static proyectoCajero.archivosTxt;
+using Microsoft.Data.SqlClient;
 
 namespace proyectoCajero
 {
@@ -20,22 +21,65 @@ namespace proyectoCajero
             _usuarioActual = usuario;
         }
 
-        private void MenuUsuario_Load(object sender, EventArgs e)
+        private async void MenuUsuario_Load(object sender, EventArgs e)
         {
             lblBienvenida.Text = $"Hola, {_usuarioActual.Nombre}";
-            // 2. Calcular el total retirado por el usuario en el día de hoy
-            string pathTransacciones = direccione.obtenerRutasTxt("transacciones.txt");
-            List<Transaccion> todasLasTransacciones = ManejadorArchivosTransaccion.LeerTransacciones(pathTransacciones);
 
-            decimal retiradoHoy = todasLasTransacciones
-                .Where(t =>
-                    t.NumeroTarjeta == _usuarioActual.NumeroTarjeta && // Transacciones de este usuario
-                    t.Tipo == TipoTransaccion.Retiro &&                 // que sean retiros
-                    t.FechaHora.Date == DateTime.Today)                // y que sean de hoy
-                .Sum(t => t.Monto);                                    // Sumar los montos
+            try
+            {
+                var conexion = new ConexionBd();
 
-            // Guardamos el cálculo en la propiedad de nuestro objeto usuario
-            _usuarioActual.MontoRetiradoHoy = retiradoHoy;
+                // Obtener datos actualizados del usuario (saldo y límite) desde la BD
+                var usuarioBd = await conexion.GetUsuarioByNumeroTarjetaAsync(_usuarioActual.NumeroTarjeta);
+                if (usuarioBd != null)
+                {
+                    _usuarioActual.SaldoActual = usuarioBd.SaldoActual;
+                    _usuarioActual.MontoMaximoDiario = usuarioBd.MontoMaximoDiario;
+                }
+
+                // Calcular el total retirado por el usuario en el día de hoy consultando la tabla Transaccion
+                const string sqlSum = @"SELECT ISNULL(SUM(tr.Monto), 0)
+FROM Transaccion tr
+INNER JOIN Tarjeta t ON tr.TarjetaID = t.TarjetaID
+INNER JOIN TipoTransaccion tt ON tr.TipoTransaccionID = tt.TipoTransaccionID
+WHERE t.NumeroTarjeta = @num AND tt.Nombre = 'Retiro' AND CAST(tr.FechaHora AS DATE) = CAST(GETDATE() AS DATE)";
+
+                var parametros = new List<SqlParameter>
+                {
+                    new SqlParameter("@num", SqlDbType.NVarChar) { Value = _usuarioActual.NumeroTarjeta }
+                };
+
+                decimal retiradoHoy = await conexion.ExecuteScalarAsync<decimal>(sqlSum, parametros);
+
+                // Guardamos el cálculo en la propiedad de nuestro objeto usuario
+                _usuarioActual.MontoRetiradoHoy = retiradoHoy;
+            }
+            catch (Exception ex)
+            {
+                // En caso de error con la BD, conservamos comportamiento anterior (leer desde archivos) como fallback
+                try
+                {
+                    string pathTransacciones = direccione.obtenerRutasTxt("transacciones.txt");
+                    List<Transaccion> todasLasTransacciones = ManejadorArchivosTransaccion.LeerTransacciones(pathTransacciones);
+
+                    decimal retiradoHoy = todasLasTransacciones
+                        .Where(t =>
+                            t.NumeroTarjeta == _usuarioActual.NumeroTarjeta &&
+                            t.Tipo == TipoTransaccion.Retiro &&
+                            t.FechaHora.Date == DateTime.Today)
+                        .Sum(t => t.Monto);
+
+                    _usuarioActual.MontoRetiradoHoy = retiradoHoy;
+                }
+                catch
+                {
+                    // ignorar si el fallback también falla
+                    _usuarioActual.MontoRetiradoHoy = 0m;
+                }
+
+                // Mostrar error opcional al usuario (silencioso si prefieres)
+                // MessageBox.Show("No fue posible consultar la base de datos: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void btnSalir_Click(object sender, EventArgs e)
@@ -65,11 +109,11 @@ namespace proyectoCajero
 
             // Construimos el mensaje para mostrar al usuario
             string mensaje =
-                $"Saldo total en su cuenta: {saldoTotal:C}\n\n" +
+                $"Saldo total en su cuenta: Q{saldoTotal:N2}\n\n" +
                 $"--- Límites de Retiro para Hoy ---\n" +
-                $"Límite diario: {limiteDiario:C}\n" +
-                $"Retirado hoy: {retiradoHoy:C}\n" +
-                $"Disponible para retirar hoy: {disponibleParaRetirarHoy:C}";
+                $"Límite diario: Q{limiteDiario:N2}\n" +
+                $"Retirado hoy: Q{retiradoHoy:N2}\n" +
+                $"Disponible para retirar hoy: Q{disponibleParaRetirarHoy:N2}";
 
             // Mostramos la información en un MessageBox
             MessageBox.Show(mensaje, "Consulta de Saldo", MessageBoxButtons.OK, MessageBoxIcon.Information);
