@@ -35,6 +35,7 @@
             modificarUsuariosToolStripMenuItem = new ToolStripMenuItem();
             activarCajerosToolStripMenuItem = new ToolStripMenuItem();
             agregarEfectivoToolStripMenuItem = new ToolStripMenuItem();
+            gestionarEmpleadosToolStripMenuItem = new ToolStripMenuItem();
             sesionBtn = new Button();
             contAdm = new TextBox();
             admName = new TextBox();
@@ -42,7 +43,6 @@
             label1 = new Label();
             newAdmBtn = new Button();
             btnModoUsuario = new Button();
-            gestionarEmpleadosToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -98,6 +98,13 @@
             agregarEfectivoToolStripMenuItem.Text = "Agregar Efectivo";
             agregarEfectivoToolStripMenuItem.Click += agregarEfectivoToolStripMenuItem_Click;
             // 
+            // gestionarEmpleadosToolStripMenuItem
+            // 
+            gestionarEmpleadosToolStripMenuItem.Name = "gestionarEmpleadosToolStripMenuItem";
+            gestionarEmpleadosToolStripMenuItem.Size = new Size(233, 26);
+            gestionarEmpleadosToolStripMenuItem.Text = "Gestionar Empleados";
+            gestionarEmpleadosToolStripMenuItem.Click += gestionarEmpleadosToolStripMenuItem_Click;
+            // 
             // sesionBtn
             // 
             sesionBtn.Location = new Point(284, 302);
@@ -148,6 +155,7 @@
             newAdmBtn.TabIndex = 10;
             newAdmBtn.Text = "Nuevo admin";
             newAdmBtn.UseVisualStyleBackColor = true;
+            newAdmBtn.Visible = false;
             newAdmBtn.Click += newAdmBtn_Click;
             // 
             // btnModoUsuario
@@ -159,13 +167,6 @@
             btnModoUsuario.Text = "Modo Usuario";
             btnModoUsuario.UseVisualStyleBackColor = true;
             btnModoUsuario.Click += btnModoUsuario_Click;
-            // 
-            // gestionarEmpleadosToolStripMenuItem
-            // 
-            gestionarEmpleadosToolStripMenuItem.Name = "gestionarEmpleadosToolStripMenuItem";
-            gestionarEmpleadosToolStripMenuItem.Size = new Size(233, 26);
-            gestionarEmpleadosToolStripMenuItem.Text = "Gestionar Empleados";
-            gestionarEmpleadosToolStripMenuItem.Click += gestionarEmpleadosToolStripMenuItem_Click;
             // 
             // Form1
             // 
