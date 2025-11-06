@@ -36,6 +36,8 @@
             btnDeposito = new Button();
             btnRetiro = new Button();
             btnSalir = new Button();
+            TransferenciasBtn = new Button();
+            transferenciaExternasBtn = new Button();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -51,6 +53,8 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(transferenciaExternasBtn);
+            groupBox1.Controls.Add(TransferenciasBtn);
             groupBox1.Controls.Add(btnCambiarPin);
             groupBox1.Controls.Add(btnVerSaldo);
             groupBox1.Controls.Add(btnUltimasTransacciones);
@@ -123,6 +127,25 @@
             btnSalir.UseVisualStyleBackColor = true;
             btnSalir.Click += btnSalir_Click;
             // 
+            // TransferenciasBtn
+            // 
+            TransferenciasBtn.Location = new Point(519, 181);
+            TransferenciasBtn.Name = "TransferenciasBtn";
+            TransferenciasBtn.Size = new Size(128, 64);
+            TransferenciasBtn.TabIndex = 5;
+            TransferenciasBtn.Text = "Transferencias a otras cuentas";
+            TransferenciasBtn.UseVisualStyleBackColor = true;
+            TransferenciasBtn.Click += TransferenciasBtn_Click;
+            // 
+            // transferenciaExternasBtn
+            // 
+            transferenciaExternasBtn.Location = new Point(313, 224);
+            transferenciaExternasBtn.Name = "transferenciaExternasBtn";
+            transferenciaExternasBtn.Size = new Size(128, 64);
+            transferenciaExternasBtn.TabIndex = 6;
+            transferenciaExternasBtn.Text = "Transferencias a otros bancos";
+            transferenciaExternasBtn.UseVisualStyleBackColor = true;
+            // 
             // MenuUsuario
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -149,5 +172,7 @@
         private Button btnDeposito;
         private Button btnRetiro;
         private Button btnSalir;
+        private Button transferenciaExternasBtn;
+        private Button TransferenciasBtn;
     }
 }

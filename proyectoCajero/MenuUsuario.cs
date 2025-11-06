@@ -164,5 +164,11 @@ WHERE t.NumeroTarjeta = @num AND tt.Nombre = 'Retiro' AND CAST(tr.FechaHora AS D
                 MenuUsuario_Load(sender, e);
             }
         }
+
+        private void TransferenciasBtn_Click(object sender, EventArgs e)
+        {
+            TransferenciasInternas transferencia = new TransferenciasInternas(_usuarioActual);
+            transferencia.ShowDialog();
+        }
     }
 }

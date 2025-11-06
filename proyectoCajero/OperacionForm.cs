@@ -307,7 +307,7 @@ namespace proyectoCajero
                             tx.Rollback();
                             MessageBox.Show("Tarjeta no encontrada.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
-                        }  
+                        }
                         tarjetaId = Convert.ToInt32(objTarj);
                     }
 
@@ -398,7 +398,7 @@ namespace proyectoCajero
                     cmdInv.Transaction = tx;
                     cmdInv.CommandText = @"SELECT d.Valor, ISNULL(i.Cantidad,0) AS Cantidad FROM Denominacion d LEFT JOIN InventarioEfectivo i ON d.DenominacionID = i.DenominacionID AND i.CajeroID = @cajero WHERE d.Valor IN (200,100,50,20,10,5,1)";
                     cmdInv.Parameters.Add(new SqlParameter("@cajero", SqlDbType.Int) { Value = cajeroId.Value });
-                    var denomCurrent = new Dictionary<int,int>();
+                    var denomCurrent = new Dictionary<int, int>();
                     using (var rdr = await cmdInv.ExecuteReaderAsync())
                     {
                         while (await rdr.ReadAsync())
@@ -411,10 +411,10 @@ namespace proyectoCajero
                     }
 
                     // Verificar disponibilidad de billetes
-                    if (denomCurrent.GetValueOrDefault(200,0) < (int)num200.Value || denomCurrent.GetValueOrDefault(100,0) < (int)num100.Value ||
-                        denomCurrent.GetValueOrDefault(50,0) < (int)num50.Value || denomCurrent.GetValueOrDefault(20,0) < (int)num20.Value ||
-                        denomCurrent.GetValueOrDefault(10,0) < (int)num10.Value || denomCurrent.GetValueOrDefault(5,0) < (int)num5.Value ||
-                        denomCurrent.GetValueOrDefault(1,0) < (int)num1.Value)
+                    if (denomCurrent.GetValueOrDefault(200, 0) < (int)num200.Value || denomCurrent.GetValueOrDefault(100, 0) < (int)num100.Value ||
+                        denomCurrent.GetValueOrDefault(50, 0) < (int)num50.Value || denomCurrent.GetValueOrDefault(20, 0) < (int)num20.Value ||
+                        denomCurrent.GetValueOrDefault(10, 0) < (int)num10.Value || denomCurrent.GetValueOrDefault(5, 0) < (int)num5.Value ||
+                        denomCurrent.GetValueOrDefault(1, 0) < (int)num1.Value)
                     {
                         tx.Rollback();
                         MessageBox.Show("El cajero no dispone de la cantidad de billetes solicitada para una o más denominaciones. Por favor, intente un desglose diferente.", "Billetes no Disponibles", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -422,7 +422,7 @@ namespace proyectoCajero
                     }
 
                     // Restar billetes en InventarioEfectivo
-                    var deductions = new Dictionary<decimal,int>
+                    var deductions = new Dictionary<decimal, int>
                     {
                         {200m, (int)num200.Value},
                         {100m, (int)num100.Value},
@@ -542,6 +542,11 @@ namespace proyectoCajero
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void OperacionForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

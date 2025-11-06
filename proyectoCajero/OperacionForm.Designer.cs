@@ -227,6 +227,7 @@
             Controls.Add(lblTotalOperacion);
             Name = "OperacionForm";
             Text = "OperacionForm";
+            Load += OperacionForm_Load;
             ((System.ComponentModel.ISupportInitialize)num1).EndInit();
             ((System.ComponentModel.ISupportInitialize)num5).EndInit();
             ((System.ComponentModel.ISupportInitialize)num10).EndInit();
