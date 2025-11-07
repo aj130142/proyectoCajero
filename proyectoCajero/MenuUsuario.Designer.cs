@@ -62,27 +62,20 @@
             groupBox1.Controls.Add(btnRetiro);
             groupBox1.Location = new Point(12, 49);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(776, 319);
+            groupBox1.Size = new Size(776, 304);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "Operaciones Disponibles";
             // 
             // transferenciaExternasBtn
             // 
-<<<<<<< HEAD
             transferenciaExternasBtn.Location = new Point(313, 224);
-=======
-            transferenciaExternasBtn.Location = new Point(299, 235);
->>>>>>> 6e823a154f5f5dbae263ef4a0dad41105d7b6232
             transferenciaExternasBtn.Name = "transferenciaExternasBtn";
             transferenciaExternasBtn.Size = new Size(128, 64);
             transferenciaExternasBtn.TabIndex = 6;
             transferenciaExternasBtn.Text = "Transferencias a otros bancos";
             transferenciaExternasBtn.UseVisualStyleBackColor = true;
-<<<<<<< HEAD
             transferenciaExternasBtn.Click += transferenciaExternasBtn_Click;
-=======
->>>>>>> 6e823a154f5f5dbae263ef4a0dad41105d7b6232
             // 
             // TransferenciasBtn
             // 
