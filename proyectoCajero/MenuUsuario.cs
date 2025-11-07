@@ -90,6 +90,8 @@ WHERE t.NumeroTarjeta = @num AND tt.Nombre = 'Retiro' AND CAST(tr.FechaHora AS D
 
         private void btnVerSaldo_Click(object sender, EventArgs e)
         {
+            
+
             // El saldo total está directamente en el objeto usuario
             decimal saldoTotal = _usuarioActual.SaldoActual;
 
@@ -170,6 +172,7 @@ WHERE t.NumeroTarjeta = @num AND tt.Nombre = 'Retiro' AND CAST(tr.FechaHora AS D
         {
             TransferenciasInternas transferencia = new TransferenciasInternas(_usuarioActual);
             transferencia.ShowDialog();
+            
         }
 
         private void transferenciaExternasBtn_Click(object sender, EventArgs e)
