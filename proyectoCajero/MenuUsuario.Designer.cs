@@ -30,14 +30,14 @@
         {
             lblBienvenida = new Label();
             groupBox1 = new GroupBox();
+            transferenciaExternasBtn = new Button();
+            TransferenciasBtn = new Button();
             btnCambiarPin = new Button();
             btnVerSaldo = new Button();
             btnUltimasTransacciones = new Button();
             btnDeposito = new Button();
             btnRetiro = new Button();
             btnSalir = new Button();
-            TransferenciasBtn = new Button();
-            transferenciaExternasBtn = new Button();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -66,6 +66,26 @@
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "Operaciones Disponibles";
+            // 
+            // transferenciaExternasBtn
+            // 
+            transferenciaExternasBtn.Location = new Point(313, 224);
+            transferenciaExternasBtn.Name = "transferenciaExternasBtn";
+            transferenciaExternasBtn.Size = new Size(128, 64);
+            transferenciaExternasBtn.TabIndex = 6;
+            transferenciaExternasBtn.Text = "Transferencias a otros bancos";
+            transferenciaExternasBtn.UseVisualStyleBackColor = true;
+            transferenciaExternasBtn.Click += transferenciaExternasBtn_Click;
+            // 
+            // TransferenciasBtn
+            // 
+            TransferenciasBtn.Location = new Point(519, 181);
+            TransferenciasBtn.Name = "TransferenciasBtn";
+            TransferenciasBtn.Size = new Size(128, 64);
+            TransferenciasBtn.TabIndex = 5;
+            TransferenciasBtn.Text = "Transferencias a otras cuentas";
+            TransferenciasBtn.UseVisualStyleBackColor = true;
+            TransferenciasBtn.Click += TransferenciasBtn_Click;
             // 
             // btnCambiarPin
             // 
@@ -126,25 +146,6 @@
             btnSalir.Text = "Salir";
             btnSalir.UseVisualStyleBackColor = true;
             btnSalir.Click += btnSalir_Click;
-            // 
-            // TransferenciasBtn
-            // 
-            TransferenciasBtn.Location = new Point(519, 181);
-            TransferenciasBtn.Name = "TransferenciasBtn";
-            TransferenciasBtn.Size = new Size(128, 64);
-            TransferenciasBtn.TabIndex = 5;
-            TransferenciasBtn.Text = "Transferencias a otras cuentas";
-            TransferenciasBtn.UseVisualStyleBackColor = true;
-            TransferenciasBtn.Click += TransferenciasBtn_Click;
-            // 
-            // transferenciaExternasBtn
-            // 
-            transferenciaExternasBtn.Location = new Point(313, 224);
-            transferenciaExternasBtn.Name = "transferenciaExternasBtn";
-            transferenciaExternasBtn.Size = new Size(128, 64);
-            transferenciaExternasBtn.TabIndex = 6;
-            transferenciaExternasBtn.Text = "Transferencias a otros bancos";
-            transferenciaExternasBtn.UseVisualStyleBackColor = true;
             // 
             // MenuUsuario
             // 

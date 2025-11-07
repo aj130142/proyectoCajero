@@ -1,124 +1,77 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace proyectoCajero
 {
-    internal class conexion
+    public static class SqlDb
     {
-     
+        public static string CS => System.Configuration.ConfigurationManager.ConnectionStrings["CajeroDB"].ConnectionString;
 
-
-        public class ServidorTCP
+        // Buscar usuario por número de tarjeta
+        public static Usuario BuscarUsuario(string numeroTarjeta)
         {
-            private TcpListener listener;
-            private bool enEjecucion;
-
-            // Diccionario: ID del cliente -> NetworkStream
-            private ConcurrentDictionary<string, NetworkStream> clientes =
-                new ConcurrentDictionary<string, NetworkStream>();
-
-            // Evento cuando llega un mensaje de algún cliente
-            public event Action<string, string> OnMensajeRecibido;
-            // parámetros: (idCliente, mensaje)
-
-            public ServidorTCP(string ip, int puerto)
+            using (var cn = new SqlConnection(CS))
+            using (var cmd = new SqlCommand(@"SELECT TOP 1 u.UsuarioID, u.Nombres, u.Apellidos, c.SaldoActual
+FROM Tarjeta t
+INNER JOIN Cuenta c ON t.CuentaID = c.CuentaID
+INNER JOIN Usuario u ON c.UsuarioID = u.UsuarioID
+WHERE t.NumeroTarjeta = @num", cn))
             {
-                listener = new TcpListener(IPAddress.Parse(ip), puerto);
-            }
-
-            public void Iniciar()
-            {
-                enEjecucion = true;
-                listener.Start();
-                Console.WriteLine("Servidor iniciado...");
-                _ = AceptarClientes();
-            }
-
-            private async Task AceptarClientes()
-            {
-                while (enEjecucion)
+                cmd.Parameters.AddWithValue("@num", numeroTarjeta);
+                cn.Open();
+                using (var r = cmd.ExecuteReader())
                 {
-                    var tcpCliente = await listener.AcceptTcpClientAsync();
-                    _ = Task.Run(() => ManejarCliente(tcpCliente));
-                }
-            }
-
-            private async Task ManejarCliente(TcpClient tcpCliente)
-            {
-                var stream = tcpCliente.GetStream();
-                byte[] buffer = new byte[1024];
-
-                // Primer mensaje debe ser el ID del cliente
-                int bytesLeidos = await stream.ReadAsync(buffer, 0, buffer.Length);
-                string idCliente = Encoding.UTF8.GetString(buffer, 0, bytesLeidos);
-
-                if (!clientes.TryAdd(idCliente, stream))
-                {
-                    MessageBox.Show($"⚠ El cliente {idCliente} ya está conectado.");
-                    tcpCliente.Close();
-                    return;
-                }
-
-                MessageBox.Show($"Cliente conectado: {idCliente}");
-
-                try
-                {
-                    while (enEjecucion)
+                    if (r.Read())
                     {
-                        bytesLeidos = await stream.ReadAsync(buffer, 0, buffer.Length);
-                        if (bytesLeidos == 0) break; // Cliente se desconectó
-
-                        string mensaje = Encoding.UTF8.GetString(buffer, 0, bytesLeidos);
-
-                        OnMensajeRecibido?.Invoke(idCliente, mensaje);
+                        return new Usuario
+                        {
+                            Id = r.GetInt32(0),
+                            Nombre = r.GetString(1) + " " + r.GetString(2),
+                            SaldoActual = r.GetDecimal(3),
+                            NumeroTarjeta = numeroTarjeta
+                        };
                     }
                 }
-                catch { }
-                finally
-                {
-                    clientes.TryRemove(idCliente, out _);
-                    stream.Close();
-                    tcpCliente.Close();
-                    Console.WriteLine($"Cliente desconectado: {idCliente}");
-                }
             }
+            return null;
+        }
 
-            // Método para enviar mensaje a un cliente específico
-            public async Task Enviar(string idCliente, string mensaje)
+        // Insertar transacción (para transferencias externas, etc)
+        public static void InsertTransaccion(SqlConnection cn, SqlTransaction tx, int idCajero, string numeroTarjeta, string tipo, decimal monto, decimal saldoPost, string detalle, int? cuentaDestinoId)
+        {
+            // Busca TarjetaID y CuentaID
+            int tarjetaId = 0, cuentaId = 0;
+            using (var cmd = new SqlCommand("SELECT TarjetaID, CuentaID FROM Tarjeta WHERE NumeroTarjeta = @num", cn, tx))
             {
-                if (clientes.TryGetValue(idCliente, out var stream))
+                cmd.Parameters.AddWithValue("@num", numeroTarjeta);
+                using (var r = cmd.ExecuteReader())
                 {
-                    byte[] datos = Encoding.UTF8.GetBytes(mensaje);
-                    await stream.WriteAsync(datos, 0, datos.Length);
-                }
-            }
-
-            // Método para enviar a todos los clientes
-            public async Task EnviarATodos(string mensaje)
-            {
-                byte[] datos = Encoding.UTF8.GetBytes(mensaje);
-
-                foreach (var kvp in clientes)
-                {
-                    try
+                    if (r.Read())
                     {
-                        await kvp.Value.WriteAsync(datos, 0, datos.Length);
+                        tarjetaId = r.GetInt32(0);
+                        cuentaId = r.GetInt32(1);
                     }
-                    catch { }
                 }
             }
-
-            public void Detener()
+            // TipoTransaccionID: 4 para TransferOutExt (ajusta según tu catálogo)
+            byte tipoTransId = tipo == "TransferOutExt" ? (byte)4 : (byte)0;
+            using (var cmd = new SqlCommand(@"INSERT INTO Transaccion (CuentaID, TarjetaID, TipoTransaccionID, Monto, FechaHora)
+VALUES (@cuenta, @tarjeta, @tipo, @monto, GETDATE())", cn, tx))
             {
-                enEjecucion = false;
-                listener.Stop();
-                Console.WriteLine("Servidor detenido.");
+                cmd.Parameters.AddWithValue("@cuenta", cuentaId);
+                cmd.Parameters.AddWithValue("@tarjeta", tarjetaId);
+                cmd.Parameters.AddWithValue("@tipo", tipoTransId);
+                cmd.Parameters.AddWithValue("@monto", monto);
+                cmd.ExecuteNonQuery();
             }
         }
     }

@@ -1,7 +1,6 @@
 using System.Text.Json;
 using static proyectoCajero.archivosTxt;
 using static proyectoCajero.carpetas.IVercrearArchivo;
-using static proyectoCajero.conexion;
 using static proyectoCajero.cajeroInicializar;
 
 namespace proyectoCajero

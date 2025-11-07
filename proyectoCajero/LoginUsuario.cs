@@ -109,6 +109,7 @@ namespace proyectoCajero
                     MessageBox.Show("El cajero no ha sido inicializado. Contacte a un administrador.", "Cajero no inicializado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
+                AppState.CurrentCajeroId = cajeroId;
 
                 using (var cmdCaj = conn.CreateCommand())
                 {

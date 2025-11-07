@@ -24,6 +24,7 @@ namespace proyectoCajero
         private async void MenuUsuario_Load(object sender, EventArgs e)
         {
             lblBienvenida.Text = $"Hola, {_usuarioActual.Nombre}";
+            AplicarTransferenciasPendientesDeNube();
 
             try
             {
@@ -169,6 +170,105 @@ WHERE t.NumeroTarjeta = @num AND tt.Nombre = 'Retiro' AND CAST(tr.FechaHora AS D
         {
             TransferenciasInternas transferencia = new TransferenciasInternas(_usuarioActual);
             transferencia.ShowDialog();
+        }
+
+        private void transferenciaExternasBtn_Click(object sender, EventArgs e)
+        {
+            // Obtener el id del cajero actual (AppState.CurrentCajeroId) y la tarjeta del usuario actual
+            if (!AppState.CurrentCajeroId.HasValue)
+            {
+                MessageBox.Show("No hay cajero configurado para la sesión actual.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            int idCajero = AppState.CurrentCajeroId.Value;
+            string tarjetaOrigen = _usuarioActual.NumeroTarjeta;
+            FrmTransferencia frm = new FrmTransferencia(idCajero, tarjetaOrigen);
+            frm.ShowDialog();
+        }
+
+        public static void AplicarTransferenciasPendientesDeNube()
+        {
+            // 1) Pendientes para mi banco
+            string err;
+            if (!MySqlCentral.ProbarConexion(out err)) return;
+            var pendientes = MySqlCentral.ListarPendientesParaBanco(AppState.IdBancoPropio);
+            if (pendientes == null || pendientes.Count == 0) return;
+
+            using (var cn = new SqlConnection(SqlDb.CS))
+            {
+                cn.Open();
+
+                foreach (var t in pendientes)
+                {
+                    // --- Idempotencia local: ¿ya aplicada?
+                    using (var chk = new SqlCommand(
+                        "SELECT COUNT(*) FROM dbo.TransferExtAplicada WHERE IdMySql=@id", cn))
+                    {
+                        chk.Parameters.Add("@id", SqlDbType.BigInt).Value = t.Id; // long de MySQL
+                        if (Convert.ToInt32(chk.ExecuteScalar()) > 0)
+                        {
+                            // Ya estaba; sólo marcar en la nube y seguir
+                            MySqlCentral.MarcarAplicada(t.Id);
+                            continue;
+                        }
+                    }
+
+                    // --- Aplicar con transacción
+                    using (var tx = cn.BeginTransaction(IsolationLevel.ReadCommitted))
+                    {
+                        try
+                        {
+                            // 1) Acreditar al usuario local
+                            int filas;
+                            using (var up = new SqlCommand(
+                                "UPDATE Usuario SET Saldo = Saldo + @m WHERE Tarjeta = @t",
+                                cn, tx))
+                            {
+                                up.Parameters.AddWithValue("@m", t.Monto);
+                                up.Parameters.AddWithValue("@t", t.DestTarjeta);
+                                filas = up.ExecuteNonQuery();
+                            }
+                            if (filas == 0) { tx.Rollback(); continue; } // tarjeta no existe
+
+                            // 2) Saldo posterior
+                            decimal saldoPost;
+                            using (var s = new SqlCommand(
+                                "SELECT Saldo FROM Usuario WHERE Tarjeta=@t", cn, tx))
+                            {
+                                s.Parameters.AddWithValue("@t", t.DestTarjeta);
+                                saldoPost = Convert.ToDecimal(s.ExecuteScalar());
+                            }
+
+                            // 3) Registrar transacción local de entrada externa
+                            var detalle = System.Text.Json.JsonSerializer.Serialize(new
+                            {
+                                a = "in-ext",
+                                banco = t.DestBanco,
+                                de = t.Origen
+                            });
+                            SqlDb.InsertTransaccion(cn, tx, AppState.CurrentCajeroId.Value,
+                                t.DestTarjeta, "TransferInExt", t.Monto, saldoPost, detalle, null);
+
+                            // 4) Guardar id MySQL aplicado
+                            using (var ins = new SqlCommand(
+                                "INSERT INTO dbo.TransferExtAplicada(IdMySql) VALUES(@id)", cn, tx))
+                            {
+                                ins.Parameters.Add("@id", SqlDbType.BigInt).Value = t.Id;
+                                ins.ExecuteNonQuery();
+                            }
+
+                            tx.Commit();
+
+                            // 5) Marcar en la nube
+                            MySqlCentral.MarcarAplicada(t.Id);
+                        }
+                        catch
+                        {
+                            try { tx.Rollback(); } catch { }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using proyectoCajero;
+﻿using Microsoft.Data.SqlClient;
+using proyectoCajero;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,12 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Data.SqlClient;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace proyectoCajero
 {
+        
     public partial class insertarUsuario : Form
     {
+        
         public insertarUsuario()
         {
             InitializeComponent();
@@ -96,6 +99,31 @@ namespace proyectoCajero
                 using var conn = await conexion.OpenConnectionAsync();
                 using var cmd = conn.CreateCommand();
 
+                //codigo para base interbanco
+                string errConn;
+                if (!MySqlCentral.ProbarConexion(out errConn))
+                {
+                    MessageBox.Show("MySQL online no disponible: " + errConn);
+                    return; // no crees local si la nube no está
+                }
+
+                const string BANCO_ACTUAL = "10010100";
+                string errIns;
+                int result = MySqlCentral.InsertarUsuarioGlobalSeguro(numeroTarjeta, nombres + " " + apellidos, BANCO_ACTUAL, out errIns);
+                // InsertarUsuarioGlobalSeguro: 1=insertado, 2=actualizado, -2=pertenece a otro banco, -1=error
+
+                if (result == -2)
+                {
+                    MessageBox.Show("La tarjeta ya pertenece a otro banco. Operación cancelada.\n" + errIns);
+                    return; // aquí NO creamos local
+                }
+                if (result == -1)
+                {
+                    MessageBox.Show("Error al sincronizar con la base central:\n" + errIns);
+                    return;
+                }
+                //fin inter banco
+
                 // Siempre usamos el procedimiento almacenado. Es la única vía.
                 cmd.CommandText = "sp_CrearNuevoClienteCompleto";
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -160,6 +188,7 @@ namespace proyectoCajero
         // Added to satisfy Designer event hook; no-op
         private void okeyBtn_MouseClick(object sender, MouseEventArgs e)
         {
+
         }
     }
 }
