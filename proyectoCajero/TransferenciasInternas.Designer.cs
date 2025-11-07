@@ -32,17 +32,16 @@
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
-            button1 = new Button();
-            cuentaAcreditarCB = new ComboBox();
             label4 = new Label();
             textBox1 = new TextBox();
-            textBox2 = new TextBox();
+            Descripcion = new TextBox();
             label5 = new Label();
             label6 = new Label();
-            textBox3 = new TextBox();
+            tokenTextbox = new TextBox();
             label7 = new Label();
             SaldoCuentaDebitarLabel = new Label();
             MontoretirarRestanteLabel = new Label();
+            cuentaCreditarLabel = new TextBox();
             SuspendLayout();
             // 
             // cuentaDebitarCB
@@ -79,24 +78,6 @@
             label3.TabIndex = 3;
             label3.Text = "Cuenta a creditar";
             // 
-            // button1
-            // 
-            button1.Location = new Point(595, 12);
-            button1.Name = "button1";
-            button1.Size = new Size(193, 29);
-            button1.TabIndex = 4;
-            button1.Text = "Agregar cuenta de tercero";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
-            // cuentaAcreditarCB
-            // 
-            cuentaAcreditarCB.FormattingEnabled = true;
-            cuentaAcreditarCB.Location = new Point(210, 156);
-            cuentaAcreditarCB.Name = "cuentaAcreditarCB";
-            cuentaAcreditarCB.Size = new Size(393, 28);
-            cuentaAcreditarCB.TabIndex = 5;
-            // 
             // label4
             // 
             label4.AutoSize = true;
@@ -113,13 +94,13 @@
             textBox1.Size = new Size(287, 27);
             textBox1.TabIndex = 7;
             // 
-            // textBox2
+            // Descripcion
             // 
-            textBox2.Location = new Point(210, 307);
-            textBox2.MaxLength = 24;
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(287, 27);
-            textBox2.TabIndex = 8;
+            Descripcion.Location = new Point(210, 307);
+            Descripcion.MaxLength = 24;
+            Descripcion.Name = "Descripcion";
+            Descripcion.Size = new Size(287, 27);
+            Descripcion.TabIndex = 8;
             // 
             // label5
             // 
@@ -139,13 +120,13 @@
             label6.TabIndex = 10;
             label6.Text = "Token";
             // 
-            // textBox3
+            // tokenTextbox
             // 
-            textBox3.Location = new Point(210, 365);
-            textBox3.MaxLength = 5;
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(125, 27);
-            textBox3.TabIndex = 11;
+            tokenTextbox.Location = new Point(210, 365);
+            tokenTextbox.MaxLength = 5;
+            tokenTextbox.Name = "tokenTextbox";
+            tokenTextbox.Size = new Size(125, 27);
+            tokenTextbox.TabIndex = 11;
             // 
             // label7
             // 
@@ -174,22 +155,28 @@
             MontoretirarRestanteLabel.TabIndex = 14;
             MontoretirarRestanteLabel.Text = "Monto que queda retirar";
             // 
+            // cuentaCreditarLabel
+            // 
+            cuentaCreditarLabel.Location = new Point(213, 156);
+            cuentaCreditarLabel.Name = "cuentaCreditarLabel";
+            cuentaCreditarLabel.Size = new Size(388, 27);
+            cuentaCreditarLabel.TabIndex = 15;
+            // 
             // TransferenciasInternas
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(cuentaCreditarLabel);
             Controls.Add(MontoretirarRestanteLabel);
             Controls.Add(SaldoCuentaDebitarLabel);
             Controls.Add(label7);
-            Controls.Add(textBox3);
+            Controls.Add(tokenTextbox);
             Controls.Add(label6);
             Controls.Add(label5);
-            Controls.Add(textBox2);
+            Controls.Add(Descripcion);
             Controls.Add(textBox1);
             Controls.Add(label4);
-            Controls.Add(cuentaAcreditarCB);
-            Controls.Add(button1);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -207,16 +194,15 @@
         private Label label1;
         private Label label2;
         private Label label3;
-        private Button button1;
-        private ComboBox cuentaAcreditarCB;
         private Label label4;
         private TextBox textBox1;
-        private TextBox textBox2;
+        private TextBox Descripcion;
         private Label label5;
         private Label label6;
-        private TextBox textBox3;
+        private TextBox tokenTextbox;
         private Label label7;
         private Label SaldoCuentaDebitarLabel;
         private Label MontoretirarRestanteLabel;
+        private TextBox cuentaCreditarLabel;
     }
 }
